@@ -66,7 +66,7 @@ sub qname {
     my($ns,$local) = $extname =~m!^(.*?)([^/#]+)$!;
     my $prefix =  $xpath_ns{$ns}; 
     die "Undefined XPath namespace prefix for $ns" unless $prefix;
-    $prefix ne '#default' ? "$prefix:$name" : $name;
+    $prefix ne '#default' ? "$prefix:$extname" : $extname;
 }
 
 sub _xpath_attribute_names { 

@@ -9,6 +9,9 @@
 BEGIN { $| = 1; print "1..1\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use XML::Atom::Syndication;
+use XML::Atom::Syndication::Document;
+use XML::Atom::Syndication::Element;
+use XML::Atom::Syndication::Characters;
 $loaded = 1;
 print "ok 1\n";
 
