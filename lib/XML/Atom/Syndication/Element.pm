@@ -71,7 +71,7 @@ sub qname {
 
 sub _xpath_attribute_names { 
 	return () unless $_[0]->{attr};
-    map { _xpath_name($_) } keys %{ $_[0]->{attr} };
+    map { qname($_) } keys %{ $_[0]->{attr} };
 }
 
 sub _xpath_attribute {
@@ -122,10 +122,11 @@ Constructor method. Creates an instance and returns it.
 Returns the extended name (Namespace URI and tag name) of the
 element. Sets the value when an optional parameter is passed.
 
-=item $atom->qname
+=item $atom->qname([$extend_name])
 
-Returns the qualified name (QName) of the element according to the
-XPath namespace prefixes.
+Returns the qualified name (QName) according to the XPath namespace
+prefixes. Takes an optional extended name parameter to resolve, Returns the
+QName of the current element otherwise.
 
 =item $atom->parent([$element])
 

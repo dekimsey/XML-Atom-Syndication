@@ -10,7 +10,7 @@ package XML::Atom::Syndication;
 
 use strict; 
 use vars qw( $VERSION $atomic );
-$VERSION = '0.04';
+$VERSION = '0.05';
 
 use XML::Parser;
 
