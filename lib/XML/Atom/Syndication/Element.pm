@@ -62,11 +62,11 @@ sub xpath_namespace {
 }
 
 sub qname {
-    my $extname = ref($_[0]) ? $_[0]->{name} : $_[0] ;
+    my $extname = $_[1] ? $_[1] : ref($_[0]) ? $_[0]->{name} : $_[0] ;
     my($ns,$local) = $extname =~m!^(.*?)([^/#]+)$!;
     my $prefix =  $xpath_ns{$ns}; 
     die "Undefined XPath namespace prefix for $ns" unless $prefix;
-    $prefix ne '#default' ? "$prefix:$extname" : $extname;
+    $prefix ne '#default' ? "$prefix:$local" : $local;
 }
 
 sub _xpath_attribute_names { 

@@ -1,5 +1,8 @@
 Revision history for Perl extension XML::Atom::Syndication
 
+0.07 May 03 2004
+    - Fixed bug in Element qname method.
+
 0.06 Apr 28 2004
     - Fixed undefined variable warning that slipped in.
     - Modified test so this doesn't happen again.
