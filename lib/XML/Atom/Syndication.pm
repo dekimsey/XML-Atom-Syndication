@@ -10,7 +10,7 @@ package XML::Atom::Syndication;
 
 use strict; 
 use vars qw( $VERSION $atomic );
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 use XML::Parser;
 
@@ -24,21 +24,10 @@ sub new {
     $a->{__parser} = XML::Parser->new( 
         Style => 'Elemental', 
             Elemental=>{
-                Element=>'XML::Atom::Syndication::Element'}, 
-                    Pkg => 'XML::Atom::Syndication',
-                        Namespaces=>1 );
-    # We dynamically add some placeholder functions for Class::XPath
-    # so we can take advantage of the Document and Characters objects
-    # Elemental can dynamically create for us.
-    no strict 'refs';
-    *{__PACKAGE__."::Document::query"} = 
-        sub { $_[0]->contents->[0]->query($_[1]) };
-    *{__PACKAGE__."::Document::_xpath_name"} = sub { undef };
-    *{__PACKAGE__."::Document::_xpath_attribute_names"} = sub { () };
-    *{__PACKAGE__."::Document::_xpath_attribute"} = sub { undef };
-    *{__PACKAGE__."::Characters::_xpath_name"} = sub { undef };
-    *{__PACKAGE__."::Characters::_xpath_attribute_names"} = sub { () };
-    *{__PACKAGE__."::Characters::_xpath_attribute"} = sub { undef };
+                Element=>'XML::Atom::Syndication::Element', 
+                    Document => 'XML::Atom::Syndication::Document',
+                        Characters => 'XML::Atom::Syndication::Characters'},
+                            Namespaces=>1 );
     $a;
 }
 
@@ -179,13 +168,20 @@ L<LWP::Simple>
 
 =head1 SEE ALSO
 
-L<XML::Atom::Syndication::Element>, L<XML::Atom>
+L<XML::Atom::Syndication::Document>,
+L<XML::Atom::Syndication::Element>, 
+L<XML::Atom::Syndication::Characters>, L<XML::Atom>
 
 AtomEnabled Alliance - http://www.atomenabled.org/
+
+atom-syntax mailing list - http://www.imc.org/atom-syntax/
 
 =head1 BUGS
 
 =item * Handling of unregistered XPath namespaces is incorrect.
+
+=item * Will complain if C<LWP::Simple::mirror> call in C<get> 
+fails.
 
 =head1 TO DO
 
@@ -198,9 +194,6 @@ AtomEnabled Alliance - http://www.atomenabled.org/
 =item * Implement a means of passing through unescaped content
 markup if desired. (This would be helpful with unescaped content
 blocks.) Or perhaps an as_xml method using XML::Generator?
-
-=item * Remove L<XML::Parser::Style::Elemental> dependency and add 
-"real" Document and Character objects to the package.
 
 =item * Implement means of LWP status/error reporting with C<get>.
 

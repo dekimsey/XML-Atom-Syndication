@@ -4,5 +4,7 @@ README
 Makefile.PL
 lib/XML/Atom/Syndication.pm
 lib/XML/Atom/Syndication/Element.pm
+lib/XML/Atom/Syndication/Document.pm
+lib/XML/Atom/Syndication/Characters.pm
 test.pl
 META.yml                                Module meta-data (added by MakeMaker)

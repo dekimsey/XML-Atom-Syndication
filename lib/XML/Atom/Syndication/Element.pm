@@ -112,13 +112,6 @@ This module is a simple class for representing a tag element in an
 Atom syndication feed parse tree that implements an XPath-esque
 interface for query the tree of elements and retreiving data.
 
-L<XML::Parser::Style::Elemental> dynamically constructs the
-extremely rudimentary XML::Atom::Syndication::Document and
-XML::Atom::Syndication::Characters packages. The Element object is
-marginally more sophisticated and required something a bit more
-specific to implement and manage the XPath interface and underlying
-functions.
-
 =head1 METHODS
 
 =item XML::Atom::Syndication::Element->new
@@ -158,9 +151,8 @@ Takes XPath-esque query string and, similar to the param method in
 the L<CGI> pacakge, returns either the first item found or an array
 of all matching elements depending on the context in which it is
 called. C<undef> is returned if nothing could be matched. These
-objects will be XML::Atom::Syndication elements except for the root
-element which will be a (dynamically generated)
-XML::Atom::Syndication::Document object.
+objects will be of this class except for the root element which
+will be a L<XML::Atom::Syndication::Document> object.
 
 This is not a full XPath implementation. For more details on the
 supported syntax see the documentation for L<Class::XPath>.
@@ -173,17 +165,10 @@ Returns a unique XPath identifier string for the element.
 
 L<XML::Parser::Style::Elemental>, L<XML::Atom>, L<Class::XPath>
 
-=head1 LICENSE
-
-The software is released under the Artistic License. The terms of
-the Artistic License are described at
-L<http://www.perl.com/language/misc/Artistic.html>.
-
 =head1 AUTHOR & COPYRIGHT
 
-Except where otherwise noted, XML::Atom::Syndication::Element is
-Copyright 2004, Timothy Appnel, cpan@timaoutloud.org. All rights
-reserved.
+Please see the XML::Atom::Syndication manpage for author,
+copyright, and license information.
 
 =cut
 

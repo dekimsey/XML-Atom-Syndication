@@ -1,6 +1,10 @@
 Revision history for Perl extension XML::Atom::Syndication
 
-0.01 Apr 15 2004
+0.03 Apr 18 2004
+    - Implemented Document and Characters objects rather then use 
+      dynamically generated ones from Elemental style.
+
+0.02 Apr 15 2004
 	- Implemented xpath_namespace method for registering other 
 	  namespace mappings for XPath queries.
 	- Fixed mishandling of mirror content in get method.
