@@ -65,7 +65,14 @@ sub qname {
     my $extname = $_[1] ? $_[1] : ref($_[0]) ? $_[0]->{name} : $_[0] ;
     my($ns,$local) = $extname =~m!^(.*?)([^/#]+)$!;
     my $prefix =  $xpath_ns{$ns}; 
-    die "Undefined XPath namespace prefix for $ns" unless $prefix;
+    # die "Undefined XPath namespace prefix for $ns" unless $prefix;
+    unless ($prefix) { # make a generic one.
+        my $i = 1;
+        while($xpath_prefix{"NS$i"}) { $i++ }
+        $xpath_prefix{"NS$i"} = $ns;
+        $xpath_ns{$ns} = "NS$i";
+        $prefix = "NS$i";
+    }
     $prefix ne '#default' ? "$prefix:$local" : $local;
 }
 

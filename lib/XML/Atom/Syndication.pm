@@ -10,7 +10,7 @@ package XML::Atom::Syndication;
 
 use strict; 
 use vars qw( $VERSION $atomic );
-$VERSION = '0.07';
+$VERSION = '0.08';
 
 use XML::Parser;
 
@@ -23,11 +23,11 @@ sub new {
     my $a = bless { }, $_[0];
     $a->{__parser} = XML::Parser->new( 
         Style => 'Elemental', 
-            Elemental=>{
-                Element=>'XML::Atom::Syndication::Element', 
-                    Document => 'XML::Atom::Syndication::Document',
-                        Characters => 'XML::Atom::Syndication::Characters'},
-                            Namespaces=>1 );
+        Elemental=>{
+            Element=>'XML::Atom::Syndication::Element', 
+            Document => 'XML::Atom::Syndication::Document',
+            Characters => 'XML::Atom::Syndication::Characters'},
+        Namespaces=>1 );
     $a;
 }
 
@@ -177,8 +177,6 @@ AtomEnabled Alliance - http://www.atomenabled.org/
 atom-syntax mailing list - http://www.imc.org/atom-syntax/
 
 =head1 BUGS
-
-=item * Handling of unregistered XPath namespaces is incorrect.
 
 =item * Will complain if C<LWP::Simple::mirror> call in C<get> 
 fails.
