@@ -19,8 +19,7 @@ use Class::XPath 1.4
             },
      get_attr_names => '_xpath_attribute_names',
      get_attr_value => '_xpath_attribute',
-     get_content => 'text_value',
-     call_match => 'query';
+     get_content => 'text_value'; 
 
 sub new { bless { }, $_[0]; }
 
@@ -38,6 +37,11 @@ sub text_value {
 
 ###--- XPath routines
 
+sub query {
+    my @nodes = $_[0]->match($_[1]);
+    wantarray ? @nodes : $nodes[0];
+}
+
 my %xpath_prefix = (
     '#default'=>"http://purl.org/atom/ns#",
     dc=>"http://purl.org/dc/elements/1.1/",
@@ -48,6 +52,14 @@ my %xpath_prefix = (
     xml=>"http://www.w3.org/XML/1998/namespace/"
 );
 my %xpath_ns = reverse %xpath_prefix;
+
+sub xpath_namespace {
+    if ($_[2]) {
+        $xpath_prefix{$_[1]} = $_[2];
+        $xpath_ns{$_[2]} = $_[1];
+    }
+    $xpath_prefix{$_[1]} || $xpath_ns{$_[1]};
+}
 
 sub _xpath_name {
     my $in = ref($_[0]) ? $_[0]->{name} : $_[0] ;
@@ -142,10 +154,12 @@ the tags stripped) as a single string.
 
 =item $atom->query($xpath)
 
-Take XPath-esque query string and returns an array of matching
-elements or C<undef> if nothing could be matched. These objects
-will be XML::Atom::Syndication elements except for the root element
-which will be a (dynamically generated)
+Takes XPath-esque query string and, similar to the param method in
+the L<CGI> pacakge, returns either the first item found or an array
+of all matching elements depending on the context in which it is
+called. C<undef> is returned if nothing could be matched. These
+objects will be XML::Atom::Syndication elements except for the root
+element which will be a (dynamically generated)
 XML::Atom::Syndication::Document object.
 
 This is not a full XPath implementation. For more details on the

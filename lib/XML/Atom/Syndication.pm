@@ -10,7 +10,7 @@ package XML::Atom::Syndication;
 
 use strict; 
 use vars qw( $VERSION $atomic );
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 use XML::Parser;
 
@@ -44,15 +44,19 @@ sub new {
 
 sub get {
     require LWP::Simple;
-    my $atom = $_[2] ? 
-        LWP::Simple::mirror($_[1],$_[2]) :
-            LWP::Simple::get($_[1]);
-    return undef unless ($atom);
-    $_[0]->{__parser}->parse($atom);
+    unless ($_[2]) {
+        my $atom = LWP::Simple::get($_[1]);
+        return $_[0]->{__parser}->parse($atom);
+    } else {
+        LWP::Simple::mirror($_[1],$_[2]);
+        return $_[0]->{__parser}->parsefile( $_[2] );
+    }
 }
 
 sub parse { $_[0]->{__parser}->parse($_[1]); } 
-sub parse_file { $_[0]->{__parser}->parse_file($_[1]); }
+sub parse_file { $_[0]->{__parser}->parsefile($_[1]); }
+
+sub xpath_namespace { shift; XML::Atom::Syndication::Element->xpath_namespace(@_); }
 
 1;
 
@@ -74,13 +78,15 @@ Atom syndication feeds.
  my($feed_title)= $doc->query('/feed/title');
  print $feed_title->text_value."\n\n";
  foreach ($doc->query('//entry')) {
-     my($title) = $_->query('title');
-     my($summary) = $_->query('summary');
-     my($link) = $_->query('link/@href');
-     print $title->text_value."\n";
-     print $summary->text_value."\n";
-     print "$link\n\n";
+     print $_->query('title')->text_value."\n";
+     print $_->query('summary')->text_value."\n";
+     print $_->query('link/@href')."\n\n";
  }
+
+ XML::Atom::Syndication->xpath_namespace('tima','http://www.timaoutloud.org/');
+ print XML::Atom::Syndication->xpath_namespace('http://www.timaoutloud.org/')."\n";
+ print XML::Atom::Syndication->xpath_namespace('tima')."\n";
+
 
 =head1 DESCRIPTION
 
@@ -113,6 +119,8 @@ interface may be a bit too spartan. Going forward, refining this
 interface so it is easier to work with will be a priority.
 (Feedback is appreciated.)
 
+This interface is still somewhat in flux and is subject to change.
+
 =head1 METHODS
 
 =item XML::Atom::Syndication->instance
@@ -139,6 +147,31 @@ system location that is specified. Like the C<parse> methods,
 returns the root L<XML::Atom::Syndication::Element> object for the
 feed.
 
+=item $XML::Atom::Syndication->xpath_namespace($prefix,$uri)
+
+=item $XML::Atom::Syndication->xpath_namespace($prefix)
+
+=item $XML::Atom::Syndication->xpath_namespace($uri)
+
+A class method accessor to the XPath namespace mappings. XPath
+query namespaces declarations are independant of the document it is
+querying. By default this module contains the followiing
+declarations:
+
+ (default/no prefix) http://purl.org/atom/ns#
+ dc                  http://purl.org/dc/elements/1.1/
+ dcterms             http://purl.org/dc/terms/
+ sy                  http://purl.org/rss/1.0/modules/syndication/
+ trackback           http://madskills.com/public/xml/rss/module/trackback/
+ xhtml               http://www.w3.org/1999/xhtml/
+ xml                 http://www.w3.org/XML/1998/namespace/
+
+To add or modify a mapping, call this method with the prefix and
+then URI to be registered. To lookup the associated URI of a prefix
+just pass in the prefix string.  If a URI is passed in then the
+associated prefix is returned. In either case C<undef> will be
+returned if no value has been set.
+
 =head1 DEPENDENCIES
 
 L<XML::Parser>, L<XML::Parser::Style::Elemental>, L<Class::XPath>,
@@ -164,15 +197,16 @@ AtomEnabled Alliance - http://www.atomenabled.org/
 
 =item * Implement a means of passing through unescaped content
 markup if desired. (This would be helpful with unescaped content
-blocks.)
+blocks.) Or perhaps an as_xml method using XML::Generator?
 
-=item * Implement registration of additional namespace prefixes
+=item * Remove L<XML::Parser::Style::Elemental> dependency and add 
+"real" Document and Character objects to the package.
 
 =item * Implement means of LWP status/error reporting with C<get>.
 
-=item * Implement ETag support within C<get>. (L<LWP::Simple> C<get>
-and C<mirror> only uses last-modified headers which are not always
-available with dynamic content.)
+=item * Implement ETag support within C<get>. L<LWP::Simple> 
+C<mirror> only uses last-modified headers which are not always
+available with dynamic content.
 
 =back
 

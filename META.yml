@@ -1,11 +1,11 @@
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
 name:         XML-Atom-Syndication
-version:      0.01
+version:      0.02
 version_from: lib/XML/Atom/Syndication.pm
 installdirs:  site
 requires:
-    XML::Parser::Style::Elemental: 0
     XML::Parser:                   0
+    XML::Parser::Style::Elemental: 0
     Class::XPath:                  1.4
     LWP::Simple:                   0
 

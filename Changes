@@ -1,4 +1,12 @@
 Revision history for Perl extension XML::Atom::Syndication
 
+0.01 Apr 15 2004
+	- Implemented xpath_namespace method for registering other 
+	  namespace mappings for XPath queries.
+	- Fixed mishandling of mirror content in get method.
+	- Removed _ from XML::Parser->parsefile method call.
+	- Implemented CGI->param like handling of XPath queries with the
+	  Element query method.
+
 0.01 Apr 07 2004
 	- Initial release into CPAN.
