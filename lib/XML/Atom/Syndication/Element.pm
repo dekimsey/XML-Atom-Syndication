@@ -10,7 +10,7 @@ package XML::Atom::Syndication::Element;
 
 use strict;
 use Class::XPath 1.4
-     get_name => '_xpath_name',
+     get_name => 'qname',
      get_parent => 'parent',
      get_root => '_xpath_root',
      get_children => sub { 
@@ -61,13 +61,12 @@ sub xpath_namespace {
     $xpath_prefix{$_[1]} || $xpath_ns{$_[1]};
 }
 
-sub _xpath_name {
-    my $in = ref($_[0]) ? $_[0]->{name} : $_[0] ;
-    my($ns,$name) = $in =~m!^(.*?)([^/#]+)$!;
-    my $prefix =  $xpath_ns{$ns} || '';
-    # doubtful that this is how an undefined xpath namespace 
-    # should be handled.
-    $prefix && $prefix ne '#default' ? "$prefix:$name" : $name;
+sub qname {
+    my $extname = ref($_[0]) ? $_[0]->{name} : $_[0] ;
+    my($ns,$local) = $extname =~m!^(.*?)([^/#]+)$!;
+    my $prefix =  $xpath_ns{$ns}; 
+    die "Undefined XPath namespace prefix for $ns" unless $prefix;
+    $prefix ne '#default' ? "$prefix:$name" : $name;
 }
 
 sub _xpath_attribute_names { 
@@ -122,6 +121,11 @@ Constructor method. Creates an instance and returns it.
 
 Returns the extended name (Namespace URI and tag name) of the
 element. Sets the value when an optional parameter is passed.
+
+=item $atom->qname
+
+Returns the qualified name (QName) of the element according to the
+XPath namespace prefixes.
 
 =item $atom->parent([$element])
 

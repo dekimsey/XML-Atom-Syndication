@@ -16,7 +16,7 @@ sub contents { $_[0]->{contents} = $_[1] if defined $_[1]; $_[0]->{contents}; }
 sub query { $_[0]->contents->[0]->query($_[1]) }
 
 ###--- hack to keep Class::XPath happy.
-sub _xpath_name {}
+sub qname {}
 sub _xpath_attribute {}
 sub _xpath_attribute_names { () }
 

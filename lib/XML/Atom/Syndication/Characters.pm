@@ -16,7 +16,7 @@ sub parent { $_[0]->{parent} = $_[1] if defined $_[1]; $_[0]->{parent}; }
 sub data { $_[0]->{data} = $_[1] if defined $_[1]; $_[0]->{data}; }
 
 ###--- hack to keep Class::XPath happy.
-sub _xpath_name {}
+sub qname {}
 sub _xpath_attribute {}
 sub _xpath_attribute_names { () }
 

@@ -1,5 +1,10 @@
 Revision history for Perl extension XML::Atom::Syndication
 
+0.04 Apr 27 2004
+    - Exposed _xpath_name as qname in Element.
+    - Dies if an unregistered XOath prefix is namespace URI is 
+      encountered.
+
 0.03 Apr 18 2004
     - Implemented Document and Characters objects rather then use 
       dynamically generated ones from Elemental style.
