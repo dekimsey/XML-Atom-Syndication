@@ -1,5 +1,10 @@
 Revision history for Perl extension XML::Atom::Syndication
 
+0.09 Jul 16 2005
+    - Replaced use of Style param in XML::Atom::Syndication with Handlers param.
+      This lowered the necessary prerequisite of XML::Parser needed.
+    - Fixed XHTML namespace and removed trailing slash. (bjoern@hoehrmann.de)
+
 0.08 Sep 23 2004
     - Add proper handling of unknown namespace prefixes.
 

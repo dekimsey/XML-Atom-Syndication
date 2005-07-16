@@ -1,23 +1,23 @@
-# Copyright (c) 2004 Timothy Appnel
+# Copyright (c) 2004-2005 Timothy Appnel
 # http://www.timaoutloud.org/
 # This code is released under the Artistic License.
 #
 # XML::Atom::Syndication::Characters - a class representing character
 # data in an Atom syndication feed.
-# 
+#
 
 package XML::Atom::Syndication::Characters;
 
 use strict;
 
-sub new { bless { }, $_[0]; }
+sub new { bless {}, $_[0]; }
 
 sub parent { $_[0]->{parent} = $_[1] if defined $_[1]; $_[0]->{parent}; }
-sub data { $_[0]->{data} = $_[1] if defined $_[1]; $_[0]->{data}; }
+sub data   { $_[0]->{data}   = $_[1] if defined $_[1]; $_[0]->{data}; }
 
 ###--- hack to keep Class::XPath happy.
-sub qname {}
-sub _xpath_attribute {}
+sub qname                  { }
+sub _xpath_attribute       { }
 sub _xpath_attribute_names { () }
 
 1;

@@ -1,18 +1,19 @@
-# Copyright (c) 2004 Timothy Appnel
+# Copyright (c) 2004-2005 Timothy Appnel
 # http://www.timaoutloud.org/
 # This code is released under the Artistic License.
 #
-# XML::Atom::Syndication - simple lightweight client for 
+# XML::Atom::Syndication - simple lightweight client for
 # consuming Atom syndication feeds.
-# 
+#
 
 package XML::Atom::Syndication;
 
-use strict; 
+use strict;
 use vars qw( $VERSION $atomic );
-$VERSION = '0.08';
+$VERSION = '0.09';
 
 use XML::Parser;
+use XML::Parser::Style::Elemental;
 
 sub instance {
     return $atomic if $atomic;
@@ -20,14 +21,25 @@ sub instance {
 }
 
 sub new {
-    my $a = bless { }, $_[0];
-    $a->{__parser} = XML::Parser->new( 
-        Style => 'Elemental', 
-        Elemental=>{
-            Element=>'XML::Atom::Syndication::Element', 
-            Document => 'XML::Atom::Syndication::Document',
-            Characters => 'XML::Atom::Syndication::Characters'},
-        Namespaces=>1 );
+    my $a = bless {}, $_[0];
+    $a->{__parser} =
+      XML::Parser->new(
+                       Namespaces    => 1,
+                       NoExpand      => 1,
+                       ParseParamEnt => 0,
+                       Handlers      => {
+                                Init  => \&XML::Parser::Style::Elemental::Init,
+                                Start => \&XML::Parser::Style::Elemental::Start,
+                                Char  => \&XML::Parser::Style::Elemental::Char,
+                                End   => \&XML::Parser::Style::Elemental::End,
+                                Final => \&XML::Parser::Style::Elemental::Final
+                       },
+                       Elemental => {
+                              Element    => 'XML::Atom::Syndication::Element',
+                              Document   => 'XML::Atom::Syndication::Document',
+                              Characters => 'XML::Atom::Syndication::Characters'
+                       },
+      );
     $a;
 }
 
@@ -37,15 +49,18 @@ sub get {
         my $atom = LWP::Simple::get($_[1]);
         return $_[0]->{__parser}->parse($atom);
     } else {
-        LWP::Simple::mirror($_[1],$_[2]);
-        return $_[0]->{__parser}->parsefile( $_[2] );
+        LWP::Simple::mirror($_[1], $_[2]);
+        return $_[0]->{__parser}->parsefile($_[2]);
     }
 }
 
-sub parse { $_[0]->{__parser}->parse($_[1]); } 
+sub parse      { $_[0]->{__parser}->parse($_[1]); }
 sub parse_file { $_[0]->{__parser}->parsefile($_[1]); }
 
-sub xpath_namespace { shift; XML::Atom::Syndication::Element->xpath_namespace(@_); }
+sub xpath_namespace {
+    shift;
+    XML::Atom::Syndication::Element->xpath_namespace(@_);
+}
 
 1;
 

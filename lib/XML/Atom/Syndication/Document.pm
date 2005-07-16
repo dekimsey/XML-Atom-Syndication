@@ -1,23 +1,23 @@
-# Copyright (c) 2004 Timothy Appnel
+# Copyright (c) 2004-2005 Timothy Appnel
 # http://www.timaoutloud.org/
 # This code is released under the Artistic License.
 #
 # XML::Atom::Syndication::Document - a class representing the root
 # of an Atom syndication feed.
-# 
+#
 
 package XML::Atom::Syndication::Document;
 
 use strict;
 
-sub new { bless { }, $_[0]; }
+sub new { bless {}, $_[0]; }
 
 sub contents { $_[0]->{contents} = $_[1] if defined $_[1]; $_[0]->{contents}; }
 sub query { $_[0]->contents->[0]->query($_[1]) }
 
 ###--- hack to keep Class::XPath happy.
-sub qname {}
-sub _xpath_attribute {}
+sub qname                  { }
+sub _xpath_attribute       { }
 sub _xpath_attribute_names { () }
 
 1;

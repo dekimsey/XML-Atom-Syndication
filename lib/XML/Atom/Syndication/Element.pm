@@ -1,38 +1,38 @@
-# Copyright (c) 2004 Timothy Appnel
+# Copyright (c) 2004-2005 Timothy Appnel
 # http://www.timaoutloud.org/
 # This code is released under the Artistic License.
 #
 # XML::Atom::Syndication::Element - a class representing a tag
 # element in an Atom syndication feed with an XPath-esque interface.
-# 
+#
 
 package XML::Atom::Syndication::Element;
 
 use strict;
 use Class::XPath 1.4
-     get_name => 'qname',
-     get_parent => 'parent',
-     get_root => '_xpath_root',
-     get_children => sub { 
-                return () unless $_[0]->can('contents'); 
-                @{ $_[0]->contents || [] } 
-            },
-     get_attr_names => '_xpath_attribute_names',
-     get_attr_value => '_xpath_attribute',
-     get_content => 'text_value'; 
+  get_name     => 'qname',
+  get_parent   => 'parent',
+  get_root     => '_xpath_root',
+  get_children => sub {
+    return () unless $_[0]->can('contents');
+    @{$_[0]->contents || []};
+  },
+  get_attr_names => '_xpath_attribute_names',
+  get_attr_value => '_xpath_attribute',
+  get_content    => 'text_value';
 
-sub new { bless { }, $_[0]; }
+sub new { bless {}, $_[0]; }
 
-sub name { $_[0]->{name} = $_[1] if defined $_[1]; $_[0]->{name}; }
-sub parent { $_[0]->{parent} = $_[1] if defined $_[1]; $_[0]->{parent}; }
+sub name     { $_[0]->{name}     = $_[1] if defined $_[1]; $_[0]->{name}; }
+sub parent   { $_[0]->{parent}   = $_[1] if defined $_[1]; $_[0]->{parent}; }
 sub contents { $_[0]->{contents} = $_[1] if defined $_[1]; $_[0]->{contents}; }
 sub attributes { $_[0]->{attr} = $_[1] if defined $_[1]; $_[0]->{attr}; }
 
 sub text_value {
     return '' unless ref($_[0]->contents);
-    join('', map { ref($_) eq __PACKAGE__ ? 
-                $_->text_value : $_->data } 
-                    @{ $_[0]->contents } );
+    join('',
+         map { ref($_) eq __PACKAGE__ ? $_->text_value : $_->data }
+           @{$_[0]->contents});
 }
 
 ###--- XPath routines
@@ -43,62 +43,63 @@ sub query {
 }
 
 my %xpath_prefix = (
-    '#default'=>"http://purl.org/atom/ns#",
-    dc=>"http://purl.org/dc/elements/1.1/",
-    dcterms=>"http://purl.org/dc/terms/",
-    sy=>"http://purl.org/rss/1.0/modules/syndication/",
-    trackback=>"http://madskills.com/public/xml/rss/module/trackback/",
-    xhtml=>"http://www.w3.org/1999/xhtml/",
-    xml=>"http://www.w3.org/XML/1998/namespace/"
+           '#default' => "http://purl.org/atom/ns#",
+           dc         => "http://purl.org/dc/elements/1.1/",
+           dcterms    => "http://purl.org/dc/terms/",
+           sy         => "http://purl.org/rss/1.0/modules/syndication/",
+           trackback => "http://madskills.com/public/xml/rss/module/trackback/",
+           xhtml     => "http://www.w3.org/1999/xhtml",
+           xml       => "http://www.w3.org/XML/1998/namespace"
 );
 my %xpath_ns = reverse %xpath_prefix;
 
 sub xpath_namespace {
     if ($_[2]) {
         $xpath_prefix{$_[1]} = $_[2];
-        $xpath_ns{$_[2]} = $_[1];
+        $xpath_ns{$_[2]}     = $_[1];
     }
     $xpath_prefix{$_[1]} || $xpath_ns{$_[1]};
 }
 
 sub qname {
-    my $extname = $_[1] ? $_[1] : ref($_[0]) ? $_[0]->{name} : $_[0] ;
-    my($ns,$local) = $extname =~m!^(.*?)([^/#]+)$!;
-    my $prefix =  $xpath_ns{$ns}; 
+    my $extname = $_[1] ? $_[1] : ref($_[0]) ? $_[0]->{name} : $_[0];
+    my ($ns, $local) = $extname =~ m!^(.*?)([^/#]+)$!;
+    my $prefix = $xpath_ns{$ns};
+
     # die "Undefined XPath namespace prefix for $ns" unless $prefix;
-    unless ($prefix) { # make a generic one.
+    unless ($prefix) {    # make a generic one.
         my $i = 1;
-        while($xpath_prefix{"NS$i"}) { $i++ }
+        while ($xpath_prefix{"NS$i"}) { $i++ }
         $xpath_prefix{"NS$i"} = $ns;
-        $xpath_ns{$ns} = "NS$i";
-        $prefix = "NS$i";
+        $xpath_ns{$ns}        = "NS$i";
+        $prefix               = "NS$i";
     }
     $prefix ne '#default' ? "$prefix:$local" : $local;
 }
 
-sub _xpath_attribute_names { 
-	return () unless $_[0]->{attr};
-    map { qname($_) } keys %{ $_[0]->{attr} };
+sub _xpath_attribute_names {
+    return () unless $_[0]->{attr};
+    map { qname($_) } keys %{$_[0]->{attr}};
 }
 
 sub _xpath_attribute {
-	my $self = shift;
-	my $name = shift;
-	my $ns = '';
-	if ( $name=~/(\w+):(\w+)/ ) {
-		$name = $2;
-		$ns = $xpath_prefix{$1};
-		$ns .=  '/' unless $ns=~m![/#]$!;
-	} else {
-	    ($ns = $self->name)=~ s/\w+$//;
-	}
-	$self->{attr}->{"$ns$name"};
+    my $self = shift;
+    my $name = shift;
+    my $ns   = '';
+    if ($name =~ /(\w+):(\w+)/) {
+        $name = $2;
+        $ns   = $xpath_prefix{$1};
+        $ns .= '/' unless $ns =~ m![/#]$!;
+    } else {
+        ($ns = $self->name) =~ s/\w+$//;
+    }
+    $self->{attr}->{"$ns$name"};
 }
 
-sub _xpath_root { 
-    my $o=shift; 
-    while($o->can('parent') && $o->parent) { $o = $o->parent }
-    $o; 
+sub _xpath_root {
+    my $o = shift;
+    while ($o->can('parent') && $o->parent) { $o = $o->parent }
+    $o;
 }
 
 1;
