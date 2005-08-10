@@ -42,37 +42,20 @@ sub query {
     wantarray ? @nodes : $nodes[0];
 }
 
-my %xpath_prefix = (
-           '#default' => "http://purl.org/atom/ns#",
-           dc         => "http://purl.org/dc/elements/1.1/",
-           dcterms    => "http://purl.org/dc/terms/",
-           sy         => "http://purl.org/rss/1.0/modules/syndication/",
-           trackback => "http://madskills.com/public/xml/rss/module/trackback/",
-           xhtml     => "http://www.w3.org/1999/xhtml",
-           xml       => "http://www.w3.org/XML/1998/namespace"
-);
-my %xpath_ns = reverse %xpath_prefix;
-
-sub xpath_namespace {
-    if ($_[2]) {
-        $xpath_prefix{$_[1]} = $_[2];
-        $xpath_ns{$_[2]}     = $_[1];
-    }
-    $xpath_prefix{$_[1]} || $xpath_ns{$_[1]};
-}
-
 sub qname {
     my $extname = $_[1] ? $_[1] : ref($_[0]) ? $_[0]->{name} : $_[0];
     my ($ns, $local) = $extname =~ m!^(.*?)([^/#]+)$!;
-    my $prefix = $xpath_ns{$ns};
-
+    my $prefix = XML::Atom::Syndication->xpath_namespace($ns);
+    unless ($prefix) {   # perhaps slash needs to vanish? # in for good measure.
+        $ns =~ s{[/#]$}{};
+        $prefix = XML::Atom::Syndication->xpath_namespace($ns);
+    }
     # die "Undefined XPath namespace prefix for $ns" unless $prefix;
     unless ($prefix) {    # make a generic one.
         my $i = 1;
-        while ($xpath_prefix{"NS$i"}) { $i++ }
-        $xpath_prefix{"NS$i"} = $ns;
-        $xpath_ns{$ns}        = "NS$i";
-        $prefix               = "NS$i";
+        while (XML::Atom::Syndication->xpath_namespace("NS$i")) { $i++ }
+        XML::Atom::Syndication->xpath_namespace("NS$i", $ns);
+        $prefix = "NS$i";
     }
     $prefix ne '#default' ? "$prefix:$local" : $local;
 }
@@ -88,7 +71,7 @@ sub _xpath_attribute {
     my $ns   = '';
     if ($name =~ /(\w+):(\w+)/) {
         $name = $2;
-        $ns   = $xpath_prefix{$1};
+        $ns   = XML::Atom::Syndication->xpath_namespace($1);
         $ns .= '/' unless $ns =~ m![/#]$!;
     } else {
         ($ns = $self->name) =~ s/\w+$//;

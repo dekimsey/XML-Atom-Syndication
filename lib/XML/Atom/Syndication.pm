@@ -10,10 +10,21 @@ package XML::Atom::Syndication;
 
 use strict;
 use vars qw( $VERSION $atomic );
-$VERSION = '0.09';
+$VERSION = '0.091';
 
 use XML::Parser;
 use XML::Parser::Style::Elemental;
+
+my %xpath_prefix = (
+           '#default' => "http://purl.org/atom/ns#",
+           dc         => "http://purl.org/dc/elements/1.1/",
+           dcterms    => "http://purl.org/dc/terms/",
+           sy         => "http://purl.org/rss/1.0/modules/syndication/",
+           trackback => "http://madskills.com/public/xml/rss/module/trackback/",
+           xhtml     => "http://www.w3.org/1999/xhtml",
+           xml       => "http://www.w3.org/XML/1998/namespace"
+);
+my %xpath_ns = reverse %xpath_prefix;
 
 sub instance {
     return $atomic if $atomic;
@@ -43,6 +54,14 @@ sub new {
     $a;
 }
 
+sub xpath_namespace {
+    if ($_[2]) {
+        $xpath_prefix{$_[1]} = $_[2];
+        $xpath_ns{$_[2]}     = $_[1];
+    }
+    $xpath_prefix{$_[1]} || $xpath_ns{$_[1]};
+}
+
 sub get {
     require LWP::Simple;
     unless ($_[2]) {
@@ -56,11 +75,6 @@ sub get {
 
 sub parse      { $_[0]->{__parser}->parse($_[1]); }
 sub parse_file { $_[0]->{__parser}->parsefile($_[1]); }
-
-sub xpath_namespace {
-    shift;
-    XML::Atom::Syndication::Element->xpath_namespace(@_);
-}
 
 1;
 
