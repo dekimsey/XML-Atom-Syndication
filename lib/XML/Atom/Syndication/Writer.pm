@@ -69,7 +69,8 @@ sub as_xml {
         foreach (keys %$a) {
             my ($aname, $ans) = process_name($_);
             next
-              if ($ans eq 'http://www.w3.org/2000/xmlns/' || $aname eq 'xmlns');
+              if (   $ans eq 'http://www.w3.org/2000/xmlns/'
+                  || $aname eq 'xmlns');
             my $key = $is_full && $ans ? [$ans, $aname] : $aname;
             push @attr, $key, $a->{$_};
         }
@@ -101,8 +102,10 @@ sub encode_xml {
     /x
       ) {
 
-     # $w->cdata($data); # this was inserting a extra character into returned strings.
-        $w->characters($data);
+# $w->cdata($data); # this was inserting a extra character into returned strings.
+        my $str = $w->raw($data);
+        $str =~ s/]]>/]]&gt;/g;
+        '<![CDATA[' . $str . ']]>';
       } else {
         $w->characters($data);
     }

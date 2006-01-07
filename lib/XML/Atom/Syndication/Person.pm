@@ -1,9 +1,6 @@
 package XML::Atom::Syndication::Person;
 use strict;
-
 use base qw( XML::Atom::Syndication::Object );
-
-sub element_name { 'author' }    # what about contributor???
 
 1;
 
@@ -29,10 +26,25 @@ L<XML::Atom::Syndication:::Object> that it inherits numerous
 methods from. You should already be familar with its base
 class before proceeding.
 
+=over
+
+=item XML::Atom::Syndication::Author->new(...)
+
+=item XML::Atom::Syndication::Contributor->new(...)
+
+Since a person construct can be an author or a contributor
+XML::Atom::Syndication::Person contains two subclasses,
+XML::Atom::Syndication::Author and
+XML::Atom::Syndication::Contributor. These classes have
+identical interfaces. The only difference is the underlying
+element they represent in the parse tree.
+
+=back
+
 =head2 ELEMENT ACCESSORS
 
 The following known Atom elements can be accessed through
-objects of this class. See ELEMENT ACCESSORS in
+objects of these classes. See ELEMENT ACCESSORS in
 L<XML::Atom::Syndication::Object> for more detail.
 
 =over 

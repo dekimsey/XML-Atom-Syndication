@@ -35,7 +35,7 @@ sub add_entry {
     }
 }
 
-sub insert_entry { shift->add_entry(shift,{mode=>'insert'}) }
+sub insert_entry { shift->add_entry(shift, {mode => 'insert'}) }
 
 sub entries {
     my $feed = shift;
@@ -83,6 +83,10 @@ Accessor to the C<xml:lang> attribute. See
 [W3C.REC-xml-20040204], Section 2.12 for more on the use of
 this attribute.
 
+=item $feed->generator_uri($uri)
+
+=item $feed->generator_version($version)
+
 =item $feed->add_entry($entry)
 
 Appends a L<XML::Atom::Syndication::Entry> object to the
@@ -112,7 +116,8 @@ L<XML::Atom::Syndication::Object> for more detail.
 =item generator
 
 Identifies the agent used to generate a feed for debugging
-and other purposes.
+and other purposes. See the section below on accessing the 
+generator URI and version.
 
 =item icon
 
@@ -155,6 +160,20 @@ values MUST conform to the "date-time" production in
 [RFC3339].
 
 =back
+
+=head2 ACCESSING THE GENERATOR URI AND VERSION
+
+The generator element is currently implemented as a standard
+element accessor. This is fin if all you want is the
+human-readable label however the uri and version attributes
+that may be present cannot be accessed through this means.
+If you do need access to these attributes use the node_list
+utility method to retreive the underlying generator element
+and then get/set the attribute. For instance...
+
+ my($g) = nodelist($feed,$feed->ns,'generator');
+ $g->attributes->{uri};                 # get uri attribute
+ $g->attributes->{version} = '1.0';     # set version attribute
 
 =head1 AUTHOR & COPYRIGHT
 

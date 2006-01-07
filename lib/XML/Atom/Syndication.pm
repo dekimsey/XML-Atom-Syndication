@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION);
-$VERSION = '0.9_01';
+$VERSION = '0.9_02';
 
 package XML::Atom::Syndication::Namespace;
 use strict;
@@ -102,6 +102,8 @@ L<XML::Atom>, L<XML::RAI>
 
 http://www.atomenabled.org/developers/syndication/atom-format-spec.php
 
+F<TODO>
+
 =head1 LICENSE
 
 The software is released under the Artistic License. The
@@ -111,7 +113,7 @@ L<http://www.perl.com/language/misc/Artistic.html>.
 =head1 AUTHOR & COPYRIGHT
 
 Except where otherwise noted, XML::Atom::Syndication is
-Copyright 2004-2005, Timothy Appnel, cpan@timaoutloud.org.
+Copyright 2004-2006, Timothy Appnel, cpan@timaoutloud.org.
 All rights reserved.
 
 =cut

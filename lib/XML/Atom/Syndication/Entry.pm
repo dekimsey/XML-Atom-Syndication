@@ -3,19 +3,35 @@ use strict;
 
 use base qw( XML::Atom::Syndication::Thing );
 
-use XML::Atom::Syndication::Content;
-
 sub element_name { 'entry' }
 
 sub content {
     my $entry = shift;
     my @arg   = @_;
     if (@arg && !ref($arg[0]) ne 'XML::Atom::Syndication::Content') {
+        require XML::Atom::Syndication::Content;
+        $arg[1] ||= 'text';
         $arg[0] =
-          XML::Atom::Syndication::Content->new(Body      => $arg[0],
-                                               Namespace => $entry->ns);
+          XML::Atom::Syndication::Content->new(
+                                               Body      => $arg[0],
+                                               Type      => $arg[1],
+                                               Namespace => $entry->ns
+          );
     }
     $entry->_element('XML::Atom::Syndication::Content', 'content', @arg);
+}
+
+sub source {
+    my $atom = shift;
+    if (@_) {
+        $atom->set($atom->ns, 'source', $_[0]);
+    } else {
+        my ($e) = nodelist($atom, $atom->ns, 'source');
+        return unless $e;
+        require XML::Atom::Syndication::Source;
+        XML::Atom::Syndication::Source->new(Elem      => $e,
+                                            Namespace => $atom->ns);
+    }
 }
 
 1;
@@ -49,6 +65,14 @@ Contains or links to the content of the entry. C<$body> must
 be a string or L<XML::Atom::Syndication::Content> object.
 
 B<NOTE: Content handling is currently not Atom 1.0 compliant.>
+
+=item $entry->source($source)
+
+Contains meta data describing the original source of the
+entry. You can optionally pass in a
+L<XML::Atom::Syndication::Source> object to set the source.
+Since only one source element may be affixed to each entry
+this method will overwrite any existing source elements.
 
 =back
 

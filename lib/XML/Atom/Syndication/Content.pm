@@ -17,13 +17,9 @@ sub new {
 
 sub init {
     my $content = shift;
-    my %param = @_ == 1 ? (Body => $_[0]) : @_;
+    my %param = @_ == 1 ? (Body => $_[0]) : @_; # escaped text is assumed.
     $content->SUPER::init(%param);
     my $e = $content->elem;
-    if ($e && !$content->mode) {
-        my ($mode) = _determine_mode($e->text_content);
-        $e->attributes->{'{}mode'} = $mode;
-    }
     if ($param{Body}) {
         $content->body($param{Body});
     }
@@ -37,50 +33,73 @@ sub element_name { 'content' }
 sub get          { shift->get_attribute(@_) }
 sub set          { shift->set_attribute(@_) }
 
-sub mode { $_[0]->get_attribute('mode') } # not in 1.0
+# sub mode { $_[0]->get_attribute('mode') }    # not in 1.0
 
 sub base {
     my $content = shift;
-    $content->set_attribute(XMLNS,'base', $_[0]) if @_;
-    $content->get_attribute(XMLNS,'base');
+    $content->set_attribute(XMLNS, 'base', $_[0]) if @_;
+    $content->get_attribute(XMLNS, 'base');
 }
 
 sub language {
     my $content = shift;
-    $content->set_attribute(XMLNS,'lang', $_[0]) if @_;
-    $content->get_attribute(XMLNS,'lang');
+    $content->set_attribute(XMLNS, 'lang', $_[0]) if @_;
+    $content->get_attribute(XMLNS, 'lang');
 }
 *lang = \&language;
 
-sub body { # Review 4.1.3.3 We're not handling this correctly in terms of 1.0
+sub body {
     my $content = shift;
     my $elem    = $content->elem;
+    my $type    = $elem->attributes->{'{}type'};
+    my $mode;
+    if (!defined $type || $type eq 'text' || $type eq 'html') {
+        $mode = 'escaped';
+    } elsif (   $type eq 'xhtml'
+             || $type =~
+             m{^(text/xml|application/xml|text/xml-external-parsed-entity)$}
+             || $type =~ m{[\+/]xml$}) {
+        $mode = 'xml';
+             } elsif ($type =~ m{text/.+}) {
+        $mode = 'escaped';
+             } else {
+        $mode = 'base64';
+    }
     if (@_) {    # set
         my $data = shift;
-        my ($mode, $node) =
-          _determine_mode($data);    # sucky, but reuses xml test parse.
-        if ($mode eq 'base64') {     # is binary
+        if ($mode eq 'base64') {    # is binary
             Encode::_utf8_off($data);
             require XML::Elemental::Characters;
             my $b = XML::Elemental::Characters->new;
             $b->data(encode_base64($data, ''));
             $b->parent($elem);
             $elem->contents([$b]);
-            $elem->attributes->{'{}mode'} = 'base64';
         } elsif ($mode eq 'xml') {    # is xml
+            my $node = $data;
+            unless (ref $node) {
+                my $copy =
+                    '<div xmlns="http://www.w3.org/1999/xhtml">' . $data
+                  . '</div>';
+                eval {
+                    require XML::Elemental;
+                    my $parser = XML::Elemental->parser;
+                    my $xml    = $parser->parse_string($copy);
+                    $node = $xml->contents->[0];
+                };
+                return $content->error(
+                                 "Error parsing content body string as XML: $@")
+                  if $@;
+            }
             $node->parent($elem);
             $elem->contents([$node]);
-            $elem->attributes->{'{}mode'} = 'xml';
-        } else {                      # is text
+        } else {    # is text
             my $text = XML::Elemental::Characters->new;
             $text->data($data);
             $text->parent($elem);
             $elem->contents([$text]);
-            $elem->attributes->{'{}mode'} = 'escaped';
         }
     } else {    # get
         unless (exists $content->{__body}) {
-            my $mode = $elem->attributes->{'{}mode'} || 'xml';
             if ($mode eq 'xml') {
                 my @children =
                   grep { ref($_) eq 'XML::Elemental::Element' }
@@ -103,49 +122,13 @@ sub body { # Review 4.1.3.3 We're not handling this correctly in terms of 1.0
                     Encode::_utf8_off($content->{__body});
                 }
             } elsif ($mode eq 'base64') {
-                my $raw = decode_base64($elem->text_content);
-                if ($content->type && $content->type =~ m!text/!) {
-                    $content->{__body} = eval { Encode::decode('utf-8', $raw) }
-                      || $raw;
-                } else {
-                    $content->{__body} = $raw;
-                }
-            } elsif ($mode eq 'escaped') {
+                $content->{__body} = decode_base64($elem->text_content);
+            } else {    # escaped
                 $content->{__body} = $elem->text_content;
-            } else {
-                $content->{__body} = undef;
             }
         }
     }
     $content->{__body};
-}
-
-sub is_printable {
-    my $data = shift;
-    my $decoded = (
-                   Encode::is_utf8($data)
-                   ? $data
-                   : eval { Encode::decode("utf-8", $data, Encode::FB_CROAK); }
-    );
-    !$@ && $decoded =~ /^\p{IsPrint}*$/;
-}
-
-sub _determine_mode {
-    my $data = shift;
-    unless (is_printable($data)) {
-        return 'base64';
-    } else {
-        my $copy =
-          '<div xmlns="http://www.w3.org/1999/xhtml">' . $data . '</div>';
-        my $node;
-        eval {
-            require XML::Elemental;
-            my $parser = XML::Elemental->parser;
-            my $xml    = $parser->parse_string($copy);
-            $node = $xml->contents->[0];
-        };
-        !$@ && $node ? ('xml', $node) : 'escaped';    # sucky
-    }
 }
 
 1;
@@ -157,17 +140,86 @@ __END__
 =head1 NAME
 
 XML::Atom::Syndication::Content - class representing Atom
-entry content
+entry content.
 
-=head1 NOTES
+=head1 DESCRIPTION
 
-Due to extensive clarifications and refinements in the
-processing model from 0,3 to 1.0 this module is not what it
-needs to be. It currently reflects 0.3 handling. 
+The content element either contains or links to the content
+of the entry. The content of this element is
+Language-Sensative.
 
-Need to review the Atom 1.0 processing module (Section
-4.1.3.3 in the ASF specification) and make extensive
-changes.
+=head1 METHODS
+
+XML::Atom::Syndication::Content is a subclass of
+L<XML::Atom::Syndication:::Object> that it inherits numerous
+methods from. You should already be familar with its base
+class before proceeding.
+
+=over
+
+=item new(%params or $body)
+
+The constructor of XML::Atom::Syndication::Content acts like
+any other subclass of L<XML::Atom::Syndication::Object>
+recognizing Elem, Namespace and Version elements in the
+optional HASH that can be passed. This class also recognizes
+Body and Type elements which map to the like named methods.
+
+You can also pass in a string instead of a HASH. This string
+will be used as the body of the content and stored as
+escaped content.
+
+B<NOTE:> If you pass in a string it will be stored as
+escaped content. In other words, Base64 and XML content
+cannot use this shorthand. Instead developers should pass 
+a Body and Type element in a hash.
+
+=item base($uri)
+
+An accessor to the xml:base attribute of the content object.
+
+=item body($data)
+
+An accessor to set the body of the content if any. If a src
+attribute has been defined the body should be empty.
+
+B<NOTE:> You must set the content type I<before> you set the
+body in order for the content to be stored properly. As per
+section 4.1.3.3 of the Atom Sysndication Format
+specification, content processing is determined by the type
+attribute regardless of what the actual content is. The body
+method will not attempt to determine the format of content,
+it will simply reference the type atteribute and process it
+accordingly. If type has not been defined then it is treated
+as escaped text.
+
+=item language($code)
+
+An accessor to the xml:lang attribute of the object.
+
+=back
+
+=head2 ELEMENT ACCESSORS
+
+The following known Atom elements can be accessed through
+objects of this class. See ELEMENT ACCESSORS in
+L<XML::Atom::Syndication::Object> for more detail.
+
+=over 
+
+=item type
+
+The format of the content. The value of type may be one
+"text", "html", or "xhtml". Failing that, it must conform to
+the syntax of a MIME media type, but not be a composite
+type. See section 4.2.6 of draft-freed-media-type-reg-04 for
+more.
+
+=item src
+
+An IRI that can be used to retreive the content.
+
+=back
 
 =head1 AUTHOR & COPYRIGHT
 

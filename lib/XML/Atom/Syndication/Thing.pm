@@ -33,12 +33,14 @@ sub init {
 
 sub author {
     my $thing = shift;
-    $thing->_element('XML::Atom::Syndication::Person', 'author', @_);
+    require XML::Atom::Syndication::Person;
+    $thing->_element('XML::Atom::Syndication::Author', 'author', @_);
 }
 
 sub contributor {
     my $thing = shift;
-    $thing->_element('XML::Atom::Syndication::Person', 'contributor', @_);
+    require XML::Atom::Syndication::Person;
+    $thing->_element('XML::Atom::Syndication::Contributor', 'contributor', @_);
 }
 
 sub category {

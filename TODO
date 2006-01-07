@@ -1,0 +1,24 @@
+TO DO
+
+* Whole new 1.0 centric test suite.
+
+* Refine documenation.
+
+* General code clean-up.
+
+* Add support for text constructs. It's likely that this
+will significantly later the interface. How to avoid
+complicating interface access though? Pass around Elemental
+elements only? Perhaps a simple subclass?
+
+* Should Person be cut from the hierarchy? In other words
+make Author and Contributor a direct descendent of Object?
+
+* Fix inconsistencies in interface. For instance author,
+contributor and category have a combined accessor while link
+does not implementing a seperate add_link method.
+
+* Writer: better handling of declared namespace?
+
+* Namespace declarations are stored like attributes. Is this
+a problem?
