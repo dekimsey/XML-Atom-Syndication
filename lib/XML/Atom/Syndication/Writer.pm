@@ -168,7 +168,7 @@ attribute of the XML declaration. The default if UTF-8.
 
 =head1 AUTHOR & COPYRIGHT
 
-Please see the XML::Atom::Syndication manpage for author,
+Please see the L<XML::Atom::Syndication> manpage for author,
 copyright, and license information.
 
 =cut

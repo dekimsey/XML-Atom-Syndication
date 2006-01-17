@@ -3,10 +3,10 @@ use strict;
 
 use base qw( XML::Atom::Syndication::Object );
 
-sub element_name { 'category' }
+XML::Atom::Syndication::Category->mk_accessors('attribute', 'term', 'scheme',
+                                               'label');
 
-sub get { shift->get_attribute(@_) }
-sub set { shift->set_attribute(@_) }
+sub element_name { 'category' }
 
 1;
 
@@ -27,17 +27,18 @@ content (if any) of this element.
 =head1 METHODS
 
 XML::Atom::Syndication::Category is a subclass of
-L<XML::Atom::Syndication:::Object> that it inherits numerous
-methods from. You should already be familar with its base
+L<XML::Atom::Syndication:::Object> that it inherits a number of
+methods from. You should already be familar with this base
 class before proceeding.
 
-=head2 ELEMENT ACCESSORS
-
-The following known Atom elements can be accessed through
-objects of this class. See ELEMENT ACCESSORS in
-L<XML::Atom::Syndication::Object> for more detail.
+All of these accessors return a string. You can set these attributes
+by passing in an optional string.
 
 =over 
+
+=item label
+
+A human-readable label for display in end-user applications.
 
 =item term
 
@@ -49,15 +50,11 @@ elements.
 
 An IRI that identifies a categorization scheme.
 
-=item label
-
-A human-readable label for display in end-user applications.
-
 =back
 
 =head1 AUTHOR & COPYRIGHT
 
-Please see the XML::Atom::Syndication manpage for author,
+Please see the L<XML::Atom::Syndication> manpage for author,
 copyright, and license information.
 
 =cut

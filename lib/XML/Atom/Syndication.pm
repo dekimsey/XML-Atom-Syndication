@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION);
-$VERSION = '0.9_02';
+$VERSION = '0.9_03';
 
 package XML::Atom::Syndication::Namespace;
 use strict;
@@ -92,9 +92,19 @@ official standard at this time.
 
 =head1 DEPENDENCIES
 
-L<XML::Elemental> 2.0, L<XML::Writer> 0.600,
-L<Class:ErrorHandler>, L<Class::Accessor>, L<Encode>,
-L<MIME::Base64>
+=over
+
+=item L<XML::Elemental> 2.0
+
+=item L<XML::Writer> 0.600
+
+=item L<Class:ErrorHandler>
+
+=item L<Encode>
+
+=item L<MIME::Base64>
+
+=back
 
 =head1 SEE ALSO
 
@@ -113,7 +123,7 @@ L<http://www.perl.com/language/misc/Artistic.html>.
 =head1 AUTHOR & COPYRIGHT
 
 Except where otherwise noted, XML::Atom::Syndication is
-Copyright 2004-2006, Timothy Appnel, cpan@timaoutloud.org.
+Copyright 2004-2006, Timothy Appnel, tima@cpan.org.
 All rights reserved.
 
 =cut

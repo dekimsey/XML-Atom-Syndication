@@ -6,18 +6,13 @@ use base qw( XML::Atom::Syndication::Object );
 use Encode;
 use MIME::Base64 qw( encode_base64 decode_base64 );
 
-use constant XMLNS => 'http://www.w3.org/XML/1998/namespace';
-
-sub new {
-    my $class = shift;
-    my $self = bless {}, $class;
-    $self->init(@_) or return $class->error($self->errstr);
-    $self;
-}
+XML::Atom::Syndication::Content->mk_accessors('attribute', 'type', 'src');
+XML::Atom::Syndication::Content->mk_accessors('attribute', 'mode')
+  ;    # deprecated 0.3 accessors
 
 sub init {
     my $content = shift;
-    my %param = @_ == 1 ? (Body => $_[0]) : @_; # escaped text is assumed.
+    my %param = @_ == 1 ? (Body => $_[0]) : @_;    # escaped text is assumed.
     $content->SUPER::init(%param);
     my $e = $content->elem;
     if ($param{Body}) {
@@ -30,23 +25,6 @@ sub init {
 }
 
 sub element_name { 'content' }
-sub get          { shift->get_attribute(@_) }
-sub set          { shift->set_attribute(@_) }
-
-# sub mode { $_[0]->get_attribute('mode') }    # not in 1.0
-
-sub base {
-    my $content = shift;
-    $content->set_attribute(XMLNS, 'base', $_[0]) if @_;
-    $content->get_attribute(XMLNS, 'base');
-}
-
-sub language {
-    my $content = shift;
-    $content->set_attribute(XMLNS, 'lang', $_[0]) if @_;
-    $content->get_attribute(XMLNS, 'lang');
-}
-*lang = \&language;
 
 sub body {
     my $content = shift;
@@ -98,8 +76,10 @@ sub body {
             $text->parent($elem);
             $elem->contents([$text]);
         }
+        $content->{__body} = undef;
+        1;
     } else {    # get
-        unless (exists $content->{__body}) {
+        unless (defined $content->{__body}) {
             if ($mode eq 'xml') {
                 my @children =
                   grep { ref($_) eq 'XML::Elemental::Element' }
@@ -127,8 +107,8 @@ sub body {
                 $content->{__body} = $elem->text_content;
             }
         }
+        $content->{__body};
     }
-    $content->{__body};
 }
 
 1;
@@ -152,18 +132,21 @@ Language-Sensative.
 
 XML::Atom::Syndication::Content is a subclass of
 L<XML::Atom::Syndication:::Object> that it inherits numerous
-methods from. You should already be familar with its base
+methods from. You should already be familar with this base
 class before proceeding.
 
 =over
 
-=item new(%params or $body)
+=item new(%params)
+
+=item new($body)
 
 The constructor of XML::Atom::Syndication::Content acts like
 any other subclass of L<XML::Atom::Syndication::Object>
-recognizing Elem, Namespace and Version elements in the
-optional HASH that can be passed. This class also recognizes
-Body and Type elements which map to the like named methods.
+recognizing C<Elem>, C<Namespace> and C<Version> elements in
+the optional HASH that can be passed. This class also
+recognizes C<Body> and C<Type> elements in the hash which
+map to the like named methods.
 
 You can also pass in a string instead of a HASH. This string
 will be used as the body of the content and stored as
@@ -173,10 +156,6 @@ B<NOTE:> If you pass in a string it will be stored as
 escaped content. In other words, Base64 and XML content
 cannot use this shorthand. Instead developers should pass 
 a Body and Type element in a hash.
-
-=item base($uri)
-
-An accessor to the xml:base attribute of the content object.
 
 =item body($data)
 
@@ -189,23 +168,9 @@ section 4.1.3.3 of the Atom Sysndication Format
 specification, content processing is determined by the type
 attribute regardless of what the actual content is. The body
 method will not attempt to determine the format of content,
-it will simply reference the type atteribute and process it
+it will simply reference the type attribute and process it
 accordingly. If type has not been defined then it is treated
 as escaped text.
-
-=item language($code)
-
-An accessor to the xml:lang attribute of the object.
-
-=back
-
-=head2 ELEMENT ACCESSORS
-
-The following known Atom elements can be accessed through
-objects of this class. See ELEMENT ACCESSORS in
-L<XML::Atom::Syndication::Object> for more detail.
-
-=over 
 
 =item type
 
@@ -215,15 +180,36 @@ the syntax of a MIME media type, but not be a composite
 type. See section 4.2.6 of draft-freed-media-type-reg-04 for
 more.
 
+This accessor returns a string. You can set this attribute
+by passing in an optional string.
+
 =item src
 
 An IRI that can be used to retreive the content.
 
+This accessor returns a string. You can set this attribute
+by passing in an optional string.
+
 =back
+
+=head2 DEPRECATED
+
+=over
+
+=item mode
+
+Indicates the method used to encode the content. This
+attribute was present in version 0.3 of the format and
+removed by version 1.0. It function was assumed by the 
+type attribute and refinements to the content processing 
+model.
+
+This accessor returns a string. You can set this attribute
+by passing in an optional string.
 
 =head1 AUTHOR & COPYRIGHT
 
-Please see the XML::Atom::Syndication manpage for author,
+Please see the L<XML::Atom::Syndication> manpage for author,
 copyright, and license information.
 
 =cut

@@ -5,39 +5,41 @@ use base qw( XML::Atom::Syndication::Thing );
 
 use XML::Atom::Syndication::Util qw( nodelist );
 
-sub version { $_[0]->{version} }
+XML::Atom::Syndication::Feed->mk_accessors('element', 'icon', 'logo');
+XML::Atom::Syndication::Feed->mk_accessors('XML::Atom::Syndication::Generator',
+                                           'generator');
+XML::Atom::Syndication::Feed->mk_accessors('XML::Atom::Syndication::Text',
+                                           'subtitle');
+
+# deprecated 0.3 accessors
+XML::Atom::Syndication::Feed->mk_accessors('attribute', 'version');
+XML::Atom::Syndication::Feed->mk_accessors('element', 'copyright', 'modified',
+                                           'created');
+XML::Atom::Syndication::Feed->mk_accessors('XML::Atom::Syndication::Text',
+                                           'tagline', 'info');
 
 sub element_name { 'feed' }
 
-sub language {
-    my $feed = shift;
-    my $name = '{http://www.w3.org/XML/1998/namespace}lang';
-    $feed->elem->attributes->{$name} = $_[0] if @_;
-    $feed->elem->attributes->{$name};
+sub add_entry {
+    my ($feed, $entry) = @_;
+    $entry = $entry->elem if ref $entry eq 'XML::Atom::Syndication::Entry';
+    $feed->set_element($feed->ns, 'entry', $entry, 1);
 }
 
-sub add_entry {
-    my $feed = shift;
-    my ($entry, $opt) = @_;
-    $opt ||= {};
-    $entry = $entry->elem if ref $entry eq 'XML::Atom::Syndication::Entry';
-
-    # If Insert mode is specified we find the first entry element
-    # and insert before that element to avoid messing up any preamble.
-    # If there no entries we fallback to doing an append.
+sub insert_entry {
+    my ($feed, $entry) = @_;
     my ($first) = nodelist($feed, $feed->ns, 'entry');
-    if ($opt->{mode} && $opt->{mode} eq 'insert' && $first) {
+    if ($first) {
+        my $e   = $feed->elem;
         my @new =
-          map { $_ eq $first ? ($entry, $_) : $_ } @{$feed->elem->contents};
-        $feed->elem->contents(\@new);
+          map { $_ eq $first ? ($entry, $_) : $_ } @{$e->contents};
+        $e->contents(\@new);
     } else {
-        $feed->add($feed->ns, 'entry', $entry, undef, 1);
+        $feed->set_element($feed->ns, 'entry', $entry, 1);
     }
 }
 
-sub insert_entry { shift->add_entry(shift, {mode => 'insert'}) }
-
-sub entries {
+sub entries {    # why? because read_only????
     my $feed = shift;
     my @nodes = nodelist($feed, $feed->ns, 'entry');
     return unless @nodes;
@@ -66,37 +68,162 @@ XML::Atom::Syndication::Feed - class representing an Atom feed
 
 =head1 METHODS
 
-L<XML::Atom::Syndication::Feed> is a subclass of
-L<XML::Atom::Syndication:::Thing> that it inherits numerous
-methods from in addition to implementing some of its own.
-You should already be familar with those that class and its
-base class L<XML::Atom::Syndication::Object> before
-proceeding.
-
-The methods specific to this class are as follows:
+XML::Atom::Syndication::Feed is a subclass of
+L<XML::Atom::Syndication::Object> (via
+L<XML::Atom::Syndication:::Thing>) that it inherits numerous
+methods from. You should already be familiar with this base
+class before proceeding.
 
 =over
 
-=item language
+=item Class->new(%params)
 
-Accessor to the C<xml:lang> attribute. See
-[W3C.REC-xml-20040204], Section 2.12 for more on the use of
-this attribute.
+In addition to the keys recognized by its superclass
+(L<XML::Atom::Syndication::Object>) this class recognizes a
+C<Stream> element. The value of this element can be a SCALAR
+or FILEHANDLE (GLOB) to a valid Atom document. The C<Stream>
+element takes presidence over the standard C<Elem> element.
 
-=item $feed->generator_uri($uri)
+=item author
 
-=item $feed->generator_version($version)
+Indicates the author of the feed.
+
+This accessor returns a <XML::Atom::Syndication::Person>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
+
+=item category
+
+Conveys information about a category associated with an feed.
+
+This accessor returns a <XML::Atom::Syndication::Category>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
+
+=item contributor
+
+Indicates a person or other entity who contributed to the
+feed.
+
+This accessor returns a <XML::Atom::Syndication::Person>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
+
+=item generator
+
+Identifies the agent used to generate a feed for debugging
+and other purposes. 
+
+This accessor returns a <XML::Atom::Syndication::Generator>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
+
+=item icon
+
+An IRI reference [RFC3987] which identifies an image which
+provides iconic visual identification for a feed.
+
+This accessor returns a string. You can set this attribute
+by passing in an optional string.
+
+=item id
+
+A permanent, universally unique identifier for a feed.
+
+This accessor returns a string. You can set this attribute
+by passing in an optional string.
+
+=item link
+
+Defines a reference from an entry to a Web resource.
+
+This accessor returns a <XML::Atom::Syndication::Link>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
+
+=item logo
+
+An IRI reference [RFC3987] which identifies an image which
+provides visual identification for a feed.
+
+This accessor returns a string. You can set this attribute
+by passing in an optional string.
+
+=item published
+
+A date indicating an instance in time associated with an
+event early in the life of the entry.
+
+This accessor returns a string. You can set this attribute
+by passing in an optional string. Dates values MUST conform
+to the "date-time" production in [RFC3339].
+
+=item rights
+
+Conveys information about rights held in and over an entry
+or feed.
+
+This accessor returns a <XML::Atom::Syndication::Text>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
+
+=item subtitle
+
+Conveys a human-readable description or subtitle of a feed.
+
+This accessor returns a <XML::Atom::Syndication::Text>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
+
+=item title
+
+Conveys a human-readable title for a feed.
+
+This accessor returns a <XML::Atom::Syndication::Text>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
+
+=item updated
+
+The most recent instance in time when an entry or feed was
+modified in a way the publisher considers significant. 
+
+This accessor returns a string. You can set this attribute
+by passing in an optional string. Dates values MUST conform
+to the "date-time" production in [RFC3339].
+
+=back
+
+=head2 ENTRIES
+
+=over
 
 =item $feed->add_entry($entry)
 
 Appends a L<XML::Atom::Syndication::Entry> object to the
-feed. The new entry is placed at the end of all other
-entries.
+feed. The new entry is placed after all existing entries in
+the feed
 
 =item $feed->insert_entry($entry)
 
 Inserts a L<XML::Atom::Syndication::Entry> object I<before>
-all other entries in the feed.
+all other existing entries in the feed.
 
 =item $feed->entries
 
@@ -105,79 +232,39 @@ representing the feed's entries.
 
 =back
 
-=head2 ELEMENT ACCESSORS
+=head2 DEPRECATED
 
-The following known Atom elements can be accessed through
-objects of this class. See ELEMENT ACCESSORS in
-L<XML::Atom::Syndication::Object> for more detail.
+=over
 
-=over 
+=item copyright
 
-=item generator
+This element was renamed C<rights> in version 1.0 of the format.
 
-Identifies the agent used to generate a feed for debugging
-and other purposes. See the section below on accessing the 
-generator URI and version.
+=item created
 
-=item icon
+This element was removed from version 1.0 of the format.
 
-An IRI reference [RFC3987] which identifies an image which
-provides iconic visual identification for a feed.
+=item info
 
-=item id
+This element was removed from version 1.0 of the format.
 
-A permanent, universally unique identifier for an entry or
-feed.
+=item modified
 
-=item published
+This element was renamed C<updated> in version 1.0 of the format.
 
-A date indicating an instance in time associated with an
-event early in the life of the entry. Dates values MUST
-conform to the "date-time" production in [RFC3339].
+=item tagline
 
-=item rights
+This element was renamed C<subtitle> in version 1.0 of the format.
 
-Conveys information about rights held in and over an entry
-or feed.
+=item version
 
-=item subtitle
-
-Conveys a human-readable description or subtitle of a feed.
-
-=item summary
-
-Conveys a short summary, abstract, or excerpt of an entry.
-
-=item title
-
-Conveys a human-readable title for an entry or feed.
-
-=item updated
-
-The most recent instance in time when an entry or feed was
-modified in a way the publisher considers significant. Dates
-values MUST conform to the "date-time" production in
-[RFC3339].
+This attribute was removed from version 1.0 of the format.
 
 =back
 
-=head2 ACCESSING THE GENERATOR URI AND VERSION
-
-The generator element is currently implemented as a standard
-element accessor. This is fin if all you want is the
-human-readable label however the uri and version attributes
-that may be present cannot be accessed through this means.
-If you do need access to these attributes use the node_list
-utility method to retreive the underlying generator element
-and then get/set the attribute. For instance...
-
- my($g) = nodelist($feed,$feed->ns,'generator');
- $g->attributes->{uri};                 # get uri attribute
- $g->attributes->{version} = '1.0';     # set version attribute
-
 =head1 AUTHOR & COPYRIGHT
 
-Please see the XML::Atom::Syndication manpage for author,
+Please see the L<XML::Atom::Syndication> manpage for author,
 copyright, and license information.
 
 =cut

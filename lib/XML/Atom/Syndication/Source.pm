@@ -3,6 +3,13 @@ use strict;
 
 use base qw( XML::Atom::Syndication::Thing );
 
+XML::Atom::Syndication::Source->mk_accessors('element', 'icon', 'logo');
+XML::Atom::Syndication::Source->mk_accessors(
+                                            'XML::Atom::Syndication::Generator',
+                                            'generator');
+XML::Atom::Syndication::Source->mk_accessors('XML::Atom::Syndication::Text',
+                                             'subtitle');
+
 sub element_name { 'source' }
 
 # This is the init method in XML::Atom::Syndication::Object. Could do
@@ -33,7 +40,7 @@ source element
 
 =head1 DESCRIPTION
 
-If an atom:entry is copied from one feed into another feed,
+If an Atom entry is copied from one feed into another feed,
 then the source atom:feed's metadata (all child elements of
 atom:feed other than the atom:entry elements) MAY be
 preserved within the copied entry by adding an atom:source
@@ -45,44 +52,145 @@ contains any of the child elements atom:author,
 atom:contributor, atom:rights, or atom:category and those
 child elements are not present in the source atom:entry.
 
-The atom:source element is designed to allow the aggregation
+The source element is designed to allow the aggregation
 of entries from different feeds while retaining information
 about an entry's source feed. For this reason, Atom
 Processors which are performing such aggregation SHOULD
 include at least the required feed-level Metadata elements
-(atom:id, atom:title, and atom:updated) in the atom:source
-element.
+(id, title, and updated) in the source element.
 
 Essentially the source element contains any or all of the
 elements that can be found in a feed element except for
-atom:published and atom entry elements.
+published and atom entry elements.
 
 =head1 METHODS
 
 XML::Atom::Syndication::Source is a subclass of
-L<XML::Atom::Syndication:::Thing> that it inherits numerous
-methods from. You should already be familar with its base
+L<XML::Atom::Syndication:::Object> that it inherits a number of
+methods from. You should already be familar with this base
 class before proceeding.
 
-=head2 STREAM NOT SUPPORTED IN NEW
+=item author
 
-The source element is not to be the root of a document like
-the feed element therefore the Stream parameter is
-purposfully ignored if passed in with the C<new> method.
+Indicates the author of the source feed.
 
-=head2 ELEMENT ACCESSORS
+This accessor returns a <XML::Atom::Syndication::Person>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
 
-The following known Atom elements can be accessed through
-objects of this class. See ELEMENT ACCESSORS in
-L<XML::Atom::Syndication::Object> for more detail.
+=item category
 
-XML::Atom::Syndication::Source supports the same element
-accesors as L<XML::Atom::Syndication::Feed> except for
-atom:published.
+Conveys information about a category associated with a source feed.
+
+This accessor returns a <XML::Atom::Syndication::Category>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
+
+=item contributor
+
+Indicates a person or other entity who contributed to the
+source feed.
+
+This accessor returns a <XML::Atom::Syndication::Person>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
+
+=item generator
+
+Identifies the agent used to generate a source feed for debugging
+and other purposes. 
+
+This accessor returns a <XML::Atom::Syndication::Generator>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
+
+=item icon
+
+An IRI reference [RFC3987] which identifies an image which
+provides iconic visual identification for a feed.
+
+This accessor returns a string. You can set this attribute
+by passing in an optional string.
+
+=item id
+
+A permanent, universally unique identifier for a feed.
+
+This accessor returns a string. You can set this attribute
+by passing in an optional string.
+
+=item link
+
+Defines a reference from an entry to a Web resource.
+
+This accessor returns a <XML::Atom::Syndication::Link>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
+
+=item logo
+
+An IRI reference [RFC3987] which identifies an image which
+provides visual identification for a feed.
+
+This accessor returns a string. You can set this attribute
+by passing in an optional string.
+
+=item rights
+
+Conveys information about rights held in and over an entry
+or feed.
+
+This accessor returns a <XML::Atom::Syndication::Text>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
+
+=item subtitle
+
+Conveys a human-readable description or subtitle of a source
+feed.
+
+This accessor returns a <XML::Atom::Syndication::Text>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
+
+=item title
+
+Conveys a human-readable title for a source feed.
+
+This accessor returns a <XML::Atom::Syndication::Text>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
+
+=item updated
+
+The most recent instance in time when an entry or feed was
+modified in a way the publisher considers significant. 
+
+This accessor returns a string. You can set this attribute
+by passing in an optional string. Dates values MUST conform
+to the "date-time" production in [RFC3339].
+
+=back
 
 =head1 AUTHOR & COPYRIGHT
 
-Please see the XML::Atom::Syndication manpage for author,
+Please see the L<XML::Atom::Syndication> manpage for author,
 copyright, and license information.
 
 =cut

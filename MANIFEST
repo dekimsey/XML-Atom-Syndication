@@ -1,14 +1,14 @@
 Changes
-lib/XML/Atom/Syndication/Author.pm
 lib/XML/Atom/Syndication/Category.pm
 lib/XML/Atom/Syndication/Content.pm
-lib/XML/Atom/Syndication/Contributor.pm
 lib/XML/Atom/Syndication/Entry.pm
 lib/XML/Atom/Syndication/Feed.pm
+lib/XML/Atom/Syndication/Generator.pm
 lib/XML/Atom/Syndication/Link.pm
 lib/XML/Atom/Syndication/Object.pm
 lib/XML/Atom/Syndication/Person.pm
 lib/XML/Atom/Syndication/Source.pm
+lib/XML/Atom/Syndication/Text.pm
 lib/XML/Atom/Syndication/Thing.pm
 lib/XML/Atom/Syndication/Util.pm
 lib/XML/Atom/Syndication/Writer.pm

@@ -3,36 +3,19 @@ use strict;
 
 use base qw( XML::Atom::Syndication::Thing );
 
+XML::Atom::Syndication::Entry->mk_accessors('XML::Atom::Syndication::Source',
+                                            'source');
+XML::Atom::Syndication::Entry->mk_accessors('XML::Atom::Syndication::Content',
+                                            'content');
+XML::Atom::Syndication::Entry->mk_accessors('XML::Atom::Syndication::Text',
+                                            'summary');
+XML::Atom::Syndication::Entry->mk_accessors('element', 'published');
+
+# deprecated 0.3 accessors
+XML::Atom::Syndication::Entry->mk_accessors('element', 'issued', 'modified',
+                                            'created');
+
 sub element_name { 'entry' }
-
-sub content {
-    my $entry = shift;
-    my @arg   = @_;
-    if (@arg && !ref($arg[0]) ne 'XML::Atom::Syndication::Content') {
-        require XML::Atom::Syndication::Content;
-        $arg[1] ||= 'text';
-        $arg[0] =
-          XML::Atom::Syndication::Content->new(
-                                               Body      => $arg[0],
-                                               Type      => $arg[1],
-                                               Namespace => $entry->ns
-          );
-    }
-    $entry->_element('XML::Atom::Syndication::Content', 'content', @arg);
-}
-
-sub source {
-    my $atom = shift;
-    if (@_) {
-        $atom->set($atom->ns, 'source', $_[0]);
-    } else {
-        my ($e) = nodelist($atom, $atom->ns, 'source');
-        return unless $e;
-        require XML::Atom::Syndication::Source;
-        XML::Atom::Syndication::Source->new(Elem      => $e,
-                                            Namespace => $atom->ns);
-    }
-}
 
 1;
 
@@ -48,78 +31,168 @@ XML::Atom::Syndication::Entry - class representing an Atom entry
 
 =head1 METHODS
 
-L<XML::Atom::Syndication::Entry> is a subclass of
-L<XML::Atom::Syndication:::Thing> that it inherits numerous
-methods from in addition to implementing some of its own.
-You should already be familar with those that class and its
-base class L<XML::Atom::Syndication::Object> before
-proceeding.
-
-The methods specific to this class are as follows:
+XML::Atom::Syndication::Entry is a subclass of
+L<XML::Atom::Syndication::Object> (via
+L<XML::Atom::Syndication:::Thing>) that it inherits numerous
+methods from. You should already be familar with this base
+class before proceeding.
 
 =over
 
-=item $entry->content($body)
+=item Class->new(%params)
 
-Contains or links to the content of the entry. C<$body> must
-be a string or L<XML::Atom::Syndication::Content> object.
+In addition to the keys recognized by its superclass
+(L<XML::Atom::Syndication::Object>) this class recognizes a
+C<Stream> element. The value of this element can be a SCALAR
+or FILEHANDLE (GLOB) to a valid Atom document. The C<Stream>
+element takes presidence over the standard C<Elem> element.
 
-B<NOTE: Content handling is currently not Atom 1.0 compliant.>
+=item author
 
-=item $entry->source($source)
+Indicates the author of the entry.
 
-Contains meta data describing the original source of the
-entry. You can optionally pass in a
-L<XML::Atom::Syndication::Source> object to set the source.
-Since only one source element may be affixed to each entry
-this method will overwrite any existing source elements.
+This accessor returns a <XML::Atom::Syndication::Person>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
 
-=back
+=item category
 
-=head2 ELEMENT ACCESSORS
+Conveys information about a category associated with an entry.
 
-The following known Atom elements can be accessed through
-objects of this class. See ELEMENT ACCESSORS in
-L<XML::Atom::Syndication::Object> for more detail.
+This accessor returns a <XML::Atom::Syndication::Category>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
 
-=over 
+=item content
+
+Contains or links to the content of the entry. 
+
+This accessor returns a <XML::Atom::Syndication::Content>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
+
+=item contributor
+
+Indicates a person or other entity who contributed to the
+entry.
+
+This accessor returns a <XML::Atom::Syndication::Person>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
 
 =item id
 
 A permanent, universally unique identifier for an entry or
 feed.
 
+This accessor returns a string. You can set this attribute
+by passing in an optional string.
+
+=item link
+
+Defines a reference from an entry to a Web resource.
+
+This accessor returns a <XML::Atom::Syndication::Link>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
+
 =item published
 
 A date indicating an instance in time associated with an
-event early in the life of the entry. Dates values MUST
-conform to the "date-time" production in [RFC3339].
+event early in the life of the entry.
+
+This accessor returns a string. You can set this attribute
+by passing in an optional string. Dates values MUST conform
+to the "date-time" production in [RFC3339].
 
 =item rights
 
 Conveys information about rights held in and over an entry
 or feed.
 
+This accessor returns a <XML::Atom::Syndication::Text>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
+
+=item source
+
+Contains meta data describing the original source of the
+entry. 
+
+This accessor returns a <XML::Atom::Syndication::Source>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
+
 =item summary
 
 Conveys a short summary, abstract, or excerpt of an entry.
 
+This accessor returns a <XML::Atom::Syndication::Text>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
+
 =item title
 
-Conveys a human-readable title for an entry or feed.
+Conveys a human-readable title for an entry.
+
+This accessor returns a <XML::Atom::Syndication::Text>
+object. This element can be set using a string and hash
+reference or by passing in an object. See Working with
+Object Setters in L<XML::Atom::Syndication::Object> for more
+detail.
 
 =item updated
 
 The most recent instance in time when an entry or feed was
-modified in a way the publisher considers significant. Dates
-values MUST conform to the "date-time" production in
-[RFC3339].
+modified in a way the publisher considers significant. 
+
+This accessor returns a string. You can set this attribute
+by passing in an optional string. Dates values MUST conform
+to the "date-time" production in [RFC3339].
+
+=back
+
+=head2 DEPRECATED
+
+=over
+
+=item copyright
+
+This element was renamed C<rights> in version 1.0 of the format.
+
+=item created
+
+This element was removed from version 1.0 of the format.
+
+=item issued
+
+This element was renamed C<published> in version 1.0 of the format.
+
+=item modified
+
+This element was renamed C<updated> in version 1.0 of the format.
 
 =back
 
 =head1 AUTHOR & COPYRIGHT
 
-Please see the XML::Atom::Syndication manpage for author,
+Please see the L<XML::Atom::Syndication> manpage for author,
 copyright, and license information.
 
 =cut
