@@ -1,10 +1,18 @@
 TO DO
 
-* Whole new 1.0 centric test suite.
-
 * General code and documentation clean-up.
 
 * Writer: better handling of declared namespace?
 
 * Namespace declarations are stored like attributes. Is this
 a problem?
+
+* Should accessors representing elements with defaults
+return those default values if nothing has been defined?
+
+* lang and base finder that will check for inheritance?
+
+* Relative links processing utility?
+
+* Accessors to special links such as rel="alternate" and
+rel="self"?

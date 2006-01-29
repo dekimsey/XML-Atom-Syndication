@@ -28,9 +28,11 @@ sub add_entry {
 
 sub insert_entry {
     my ($feed, $entry) = @_;
+    $entry = $entry->elem if ref $entry eq 'XML::Atom::Syndication::Entry';
     my ($first) = nodelist($feed, $feed->ns, 'entry');
     if ($first) {
         my $e   = $feed->elem;
+        $entry->parent($e);
         my @new =
           map { $_ eq $first ? ($entry, $_) : $_ } @{$e->contents};
         $e->contents(\@new);

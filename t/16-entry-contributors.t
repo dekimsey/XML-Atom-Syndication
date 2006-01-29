@@ -10,8 +10,6 @@ use Test::More tests => 10;
 
 use XML::Atom::Syndication::Test::Util qw( get_feed );
 use XML::Atom::Syndication::Feed;
-use File::Spec;
-use FileHandle;
 
 my @contribs = (
     ['entry_contributor_name.xml','name','Example contributor'],

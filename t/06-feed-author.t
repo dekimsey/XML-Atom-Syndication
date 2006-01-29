@@ -6,12 +6,10 @@ use strict;
 use warnings;
 use lib 'lib';
 
-use Test::More tests => 6;
+use Test::More tests => 10;
 
 use XML::Atom::Syndication::Test::Util qw( get_feed );
 use XML::Atom::Syndication::Feed;
-use File::Spec;
-use FileHandle;
 
 my @authors = (
     ['feed_author_name.xml','name','Example author'],
@@ -27,9 +25,7 @@ foreach my $a (@authors) {
     ok($author->$meth eq $a->[2]);
 }
 
-__END__
-
-my $feed = get_feed('feed_author_multiple.xml');
+my $feed = get_feed('x-feed_author_multiple.xml');
 my @authors2 = $feed->author;
 ok(@authors2 == 2);
 ok(ref $authors2[0] eq 'XML::Atom::Syndication::Person');

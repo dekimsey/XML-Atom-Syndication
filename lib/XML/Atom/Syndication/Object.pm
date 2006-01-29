@@ -183,7 +183,7 @@ sub set_attribute {
 sub _remove {
     my $elem   = shift;
     my $parent = $elem->parent
-      or return $elem->error('Element parent is not defined');
+      or die 'Element parent is not defined';
     my @contents = grep { $elem ne $_ } @{$parent->contents};
     $parent->contents(\@contents);
     $elem->parent(undef);

@@ -10,8 +10,6 @@ use Test::More tests => 22;
 
 use XML::Atom::Syndication::Test::Util qw( get_feed );
 use XML::Atom::Syndication::Feed;
-use File::Spec;
-use FileHandle;
 
 my @links = (
     ['feed_link_href.xml','href','http://www.example.com/'],

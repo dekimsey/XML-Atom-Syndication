@@ -6,12 +6,10 @@ use strict;
 use warnings;
 use lib 'lib';
 
-use Test::More tests => 14;
+use Test::More tests => 16;
 
 use XML::Atom::Syndication::Test::Util qw( get_feed );
 use XML::Atom::Syndication::Feed;
-use File::Spec;
-use FileHandle;
 
 my @titles = (
     ['feed_title.xml','Example Atom'],
@@ -28,5 +26,15 @@ foreach my $t (@titles) {
     ok($title->body eq $t->[1]);    
     ok($title->type eq $t->[2]) if $t->[2];
 }
+
+# xml:base test.
+my $feed1 = get_feed('relative_uri.xml');
+my $title1 = $feed1->title;
+ok($title1->base eq 'http://example.com/test/');
+
+# xml:lang test.
+my $feed2 = get_feed('x-lang.xml');
+my $title2 = $feed2->title;
+ok($title2->lang eq 'en');
 
 1;

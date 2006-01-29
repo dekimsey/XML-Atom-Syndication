@@ -10,8 +10,6 @@ use Test::More tests => 14;
 
 use XML::Atom::Syndication::Test::Util qw( get_feed );
 use XML::Atom::Syndication::Feed;
-use File::Spec;
-use FileHandle;
 
 my @summaries = (
     ['entry_summary.xml','Example Atom'],
