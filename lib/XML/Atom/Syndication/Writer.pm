@@ -103,7 +103,7 @@ sub encode_xml {
       ) {
 
 # $w->cdata($data); # this was inserting a extra character into returned strings.
-        my $str = $w->raw($data);
+        my $str = $w->characters($data);
         $str =~ s/]]>/]]&gt;/g;
         '<![CDATA[' . $str . ']]>';
       } else {

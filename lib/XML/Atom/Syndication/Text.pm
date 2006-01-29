@@ -62,10 +62,11 @@ sub body {
                       $children[0]->name =~ /{.*}(.+)/;    # process name
                     @children = @{$children[0]->contents}
                       if (@children == 1 && $local eq 'div');
-                    $text->{__body} = '';
+                    $text->{__body} = '<div>';
                     my $w = XML::Atom::Syndication::Writer->new;
                     $w->set_prefix('', 'http://www.w3.org/1999/xhtml');
                     map { $text->{__body} .= $w->as_xml($_) } @children;
+                    $text->{__body} .= '</div>';
                 } else {
                     $text->{__body} = $elem->text_content;
                 }

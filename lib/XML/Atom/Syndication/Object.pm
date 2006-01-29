@@ -5,6 +5,7 @@ use base qw( Class::ErrorHandler );
 
 use constant XMLNS => 'http://www.w3.org/XML/1998/namespace';
 
+use Carp;
 use XML::Elemental;
 use XML::Elemental::Util qw( process_name );
 use XML::Atom::Syndication::Util qw( nodelist utf8_off );
@@ -34,6 +35,7 @@ sub init {
             $atom->{name} = $name;
         }
     }
+    $atom;
 }
 
 sub ns           { $_[0]->{ns} }
@@ -55,13 +57,13 @@ sub as_xml {
 
 sub base {
     @_ > 1
-      ? $_[0]->set_attribute(XMLNS, 'base', @_[1 .. $#])
+      ? $_[0]->set_attribute(XMLNS, 'base', @_[1 .. $#_])
       : $_[0]->get_attribute(XMLNS, 'base');
 }
 
 sub lang {
     @_ > 1
-      ? $_[0]->set_attribute(XMLNS, 'lang', @_[1 .. $#])
+      ? $_[0]->set_attribute(XMLNS, 'lang', @_[1 .. $#_])
       : $_[0]->get_attribute(XMLNS, 'lang');
 }
 
@@ -100,7 +102,8 @@ sub get_element {
     my $ns_uri =
       ref($ns) eq 'XML::Atom::Syndication::Namespace' ? $ns->{uri} : $ns;
     my @nodes = nodelist($atom, $ns_uri, $name);
-    map { utf8_off($_->text_content) } wantarray ? @nodes : $nodes[0];
+    return unless @nodes;
+    wantarray ? map { utf8_off($_->text_content) } @nodes : utf8_off($nodes[0]->text_content);
 }
 
 sub get_class {
@@ -111,8 +114,9 @@ sub get_class {
     return unless @nodes;
     eval "require $class";
     croak("Error creating accessor {$ns}$name: $@") if $@;
-    map { $class->new({Elem => $_, Namespace => $ns_uri}) }
-      wantarray ? @nodes : $nodes[0];
+    wantarray ?
+        map { $class->new(Elem => $_, Namespace => $ns_uri) } @nodes :
+        $class->new(Elem => $nodes[0], Namespace => $ns_uri)
 }
 
 sub get_attribute {

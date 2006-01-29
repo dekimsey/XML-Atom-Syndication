@@ -18,7 +18,7 @@ sub agent {
         $chars->parent($e);
         $e->contents([$chars]);
     } else {
-        $e->text_contents;
+        $e->text_content;
     }
 }
 
