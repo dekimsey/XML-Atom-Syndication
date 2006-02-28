@@ -38,21 +38,18 @@ sub get_prefix    { $_[0]->{__NS}->{$_[1]} }
 sub get_namespace { $_[0]->{__PREFIX}->{$_[1]} }
 
 sub as_xml {
-    my ($self, $node, $is_full, $encoding) = @_;
-    $encoding ||= 'utf-8';
+    my ($self, $node, $is_full) = @_;
     my $xml = '';
     my $w;
     if ($is_full) {    # full doc
         my ($name, $ns) = process_name($node->name);
         $w = XML::Writer->new(
-            OUTPUT     => \$xml,
-            NAMESPACES => 1,
-            PREFIX_MAP => $self->{__NS},
-
-            # FORCED_NS_DECLS => [ $ns ]
+                    OUTPUT     => \$xml,
+                    NAMESPACES => 1,
+                    PREFIX_MAP => $self->{__NS},    # FORCED_NS_DECLS => [ $ns ]
         );
-        $w->xmlDecl($encoding);
-    } else {           # fragment
+        $w->xmlDecl('utf-8');
+    } else {    # fragment
         $w = XML::Writer->new(OUTPUT => \$xml, UNSAFE => 1);
     }
     my $dumper;
@@ -155,14 +152,12 @@ Returns the namespace URI assigned to the given prefix.
 
 Returns the namespace prefix assigned to the given URI.
 
-=item $writer->as_xml($node,$is_full,$encoding)
+=item $writer->as_xml($node,$is_full)
 
 Returns an XML representation of the given node and all its
 descendents. By default the method returns an XML fragment
 unless C<$is_full> is a true value. If C<$is_full> is true
-an XML declartion is prepended to the output. An
-C<$encoding> parameter can be passed in to set the encoding
-attribute of the XML declaration. The default if UTF-8.
+an XML declartion is prepended to the output. 
 
 =back
 

@@ -2,6 +2,7 @@ package XML::Atom::Syndication::Thing;
 use strict;
 
 use base qw( XML::Atom::Syndication::Object );
+use Symbol;
 
 XML::Atom::Syndication::Thing->mk_accessors('XML::Atom::Syndication::Person',
                                             'author', 'contributor');
@@ -20,13 +21,34 @@ sub init {
     if (%param) {
         if (my $stream = $param{Stream}) {
             my $parser = XML::Elemental->parser;
+            my $xml;
             if (ref($stream) eq 'SCALAR') {
-                $thing->{doc} = $parser->parse_string($$stream);
+                $xml = $$stream;
             } elsif (ref $stream eq 'GLOB' || !ref($stream)) {
-                $thing->{doc} = $parser->parse_file($stream);
+                my $fh;
+                unless (ref $stream eq 'GLOB') {
+                    $fh = gensym();
+                    open $fh, $stream or die $!;
+                } else {
+                    $fh = $stream;
+                }
+                { local $/; $xml = <$fh>; }
+                close $fh unless (ref $stream eq 'GLOB');
             } else {
                 return;
             }
+            if ($] > 5.008) {
+                my ($enc) = $xml =~ m{<\?xml.*?encoding=['"](.*?)['"].*?\?>};
+                if ($enc && lc($enc) ne 'utf-8') {    # need to convert to utf-8
+                    eval {
+                        require Encode;
+                        Encode::from_to(Encode::encode_utf8($xml),
+                                        $enc, 'utf-8');
+                    };
+                    warn $@ if $@;
+                }
+            }
+            $thing->{doc}  = $parser->parse_string($xml);
             $thing->{elem} = $thing->{doc}->contents->[0];
         } elsif ($param{Elem}) {
             $thing->{elem} = $param{Elem};

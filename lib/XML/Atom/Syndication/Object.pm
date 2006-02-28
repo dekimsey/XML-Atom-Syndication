@@ -103,7 +103,9 @@ sub get_element {
       ref($ns) eq 'XML::Atom::Syndication::Namespace' ? $ns->{uri} : $ns;
     my @nodes = nodelist($atom, $ns_uri, $name);
     return unless @nodes;
-    wantarray ? map { utf8_off($_->text_content) } @nodes : utf8_off($nodes[0]->text_content);
+    wantarray
+      ? map { utf8_off($_->text_content) } @nodes
+      : utf8_off($nodes[0]->text_content);
 }
 
 sub get_class {
@@ -114,9 +116,9 @@ sub get_class {
     return unless @nodes;
     eval "require $class";
     croak("Error creating accessor {$ns}$name: $@") if $@;
-    wantarray ?
-        map { $class->new(Elem => $_, Namespace => $ns_uri) } @nodes :
-        $class->new(Elem => $nodes[0], Namespace => $ns_uri)
+    wantarray
+      ? map { $class->new(Elem => $_, Namespace => $ns_uri) } @nodes
+      : $class->new(Elem => $nodes[0], Namespace => $ns_uri);
 }
 
 sub get_attribute {
