@@ -38,12 +38,13 @@ sub init {
                 return;
             }
             if ($] > 5.008) {
-                my ($enc) = $xml =~ m{<\?xml.*?encoding=['"](.*?)['"].*?\?>};
+                $xml =~ s{<\?xml(.*?)encoding=['"](.*?)['"](.*?)\?>}
+                    {<\?xml$1encoding="utf-8"$3\?>};
+                my $enc = $2;
                 if ($enc && lc($enc) ne 'utf-8') {    # need to convert to utf-8
                     eval {
                         require Encode;
-                        Encode::from_to(Encode::encode_utf8($xml),
-                                        $enc, 'utf-8');
+                        Encode::from_to($xml, $enc, 'utf-8');
                     };
                     warn $@ if $@;
                 }
