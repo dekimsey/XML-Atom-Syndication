@@ -127,13 +127,13 @@ entry content.
 
 The content element either contains or links to the content
 of the entry. The content of this element is
-Language-Sensative.
+Language-Sensitive.
 
 =head1 METHODS
 
 XML::Atom::Syndication::Content is a subclass of
 L<XML::Atom::Syndication:::Object> that it inherits numerous
-methods from. You should already be familar with this base
+methods from. You should already be familiar with this base
 class before proceeding.
 
 =over
@@ -165,7 +165,7 @@ attribute has been defined the body should be empty.
 
 B<NOTE:> You must set the content type I<before> you set the
 body in order for the content to be stored properly. As per
-section 4.1.3.3 of the Atom Sysndication Format
+section 4.1.3.3 of the Atom Syndication Format
 specification, content processing is determined by the type
 attribute regardless of what the actual content is. The body
 method will not attempt to determine the format of content,
@@ -186,7 +186,7 @@ by passing in an optional string.
 
 =item src
 
-An IRI that can be used to retreive the content.
+An IRI that can be used to retrieve the content.
 
 This accessor returns a string. You can set this attribute
 by passing in an optional string.

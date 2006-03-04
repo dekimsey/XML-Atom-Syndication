@@ -14,7 +14,6 @@ sub element_name { 'source' }
 
 # This is the init method in XML::Atom::Syndication::Object. Could do
 # better.
-
 sub init {
     my $atom = shift;
     my %param = @_ == 1 ? (Elem => $_[0]) : @_;

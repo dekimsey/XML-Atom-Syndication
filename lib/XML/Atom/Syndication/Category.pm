@@ -28,7 +28,7 @@ content (if any) of this element.
 
 XML::Atom::Syndication::Category is a subclass of
 L<XML::Atom::Syndication:::Object> that it inherits a number of
-methods from. You should already be familar with this base
+methods from. You should already be familiar with this base
 class before proceeding.
 
 All of these accessors return a string. You can set these attributes

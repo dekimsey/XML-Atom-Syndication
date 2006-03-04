@@ -239,7 +239,7 @@ keys are:
 =item Elem
 
 A L<XML::Elemental::Element> that will be used as the source for this object. 
-This object can be retreived or set using the C<elem> method.
+This object can be retrieved or set using the C<elem> method.
 
 =item Namespace
 
@@ -297,15 +297,15 @@ attributes by passing in an optional string.
 
 An attribute that when used serves the function described in
 section 5.1.1. of RFC3986 establishing the base URI/IRI
-for resolviing any relative references found within its
+for resolving any relative references found within its
 effective scope.
 
 This attribute is represented as C<xml:base> in markup.
 
 =item lang
 
-An attribute whose content indicates the natrual language
-for the element and its descendents. See the XML 1.0
+An attribute whose content indicates the natural language
+for the element and its descendants. See the XML 1.0
 specification, Section 2.12 for more detail.
 
 This attribute is represented as C<xml:lang> in markup.
@@ -342,7 +342,7 @@ of the same type before the new node is created.
 
 In the second example the element is set with a
 L<XML::Elemental::Element> object or
-L<XML::Atom::Syndication::Object> sublcass ($object). You
+L<XML::Atom::Syndication::Object> subclass ($object). You
 can follow the object with an optional parameter ($add) to
 signify if the node is to be appended or to replace any
 similar elements.
@@ -370,7 +370,7 @@ element.
 
 =item $object->get_class($class,$ns,$name)
 
-Retrieves any direct descendents of the object with the same namespace and
+Retrieves any direct descendants of the object with the same namespace and
 name as an object of the class defined by $class. 
 
 C<$ns> is a SCALAR contain a namespace URI or a
@@ -431,7 +431,7 @@ and new value.
 
 XML::Atom::Syndication::Object dynamically generates the appropriate
 accessors for all defined elements in the Atom namespace. This is a 
-more convienant and less verbose then using generic methods 
+more convenient and less verbose then using generic methods 
 such as C<get_element> or C<set_attribute>.
 
 For instance if you wanted the issued timestamp of an entry 

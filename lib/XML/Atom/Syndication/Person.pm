@@ -28,7 +28,7 @@ to define an author or contributor.
 
 XML::Atom::Syndication::Generator is a subclass of
 L<XML::Atom::Syndication:::Object> that it inherits a number of
-methods from. You should already be familar with this base
+methods from. You should already be familiar with this base
 class before proceeding.
 
 All of these accessors return a string. You can set these elements

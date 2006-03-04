@@ -27,14 +27,40 @@ __END__
 
 XML::Atom::Syndication::Entry - class representing an Atom entry
 
+=head SYNOPSIS
+
+    use XML::Atom::Syndication::Entry;
+    use XML::Atom::Syndication::Text;
+    use XML::Atom::Syndication::Content;
+    
+    # create an entry
+    my $entry = XML::Atom::Syndication::Entry->new;
+    my $title = XML::Atom::Syndication::Text->new(Name=>'title');
+    $title->body('First Post');
+    $entry->title($title);
+    my $content = XML::Atom::Syndication::Content->new('Post Body');
+    $entry->content($content);
+    print $entry->as_xml;
+    
+    my $e = XML::Atom::Syndication::Entry->new('entry.atom');
+    print $e->title->body."\n";
+    
 =head1 DESCRIPTION
+
+XML::Atom::Syndication::Entry element represents an
+individual Atom entry that acts as a container for metadata
+and data associated with the entry. This element can appear
+as a child of a feed element represented by
+L<XML::Atom::Syndication::Feed>, or it can appear as the
+document (i.e., top-level) element of a standalone Atom
+Entry Document.
 
 =head1 METHODS
 
 XML::Atom::Syndication::Entry is a subclass of
 L<XML::Atom::Syndication::Object> (via
 L<XML::Atom::Syndication:::Thing>) that it inherits numerous
-methods from. You should already be familar with this base
+methods from. You should already be familiar with this base
 class before proceeding.
 
 =over
@@ -45,13 +71,13 @@ In addition to the keys recognized by its superclass
 (L<XML::Atom::Syndication::Object>) this class recognizes a
 C<Stream> element. The value of this element can be a SCALAR
 or FILEHANDLE (GLOB) to a valid Atom document. The C<Stream>
-element takes presidence over the standard C<Elem> element.
+element takes precedence over the standard C<Elem> element.
 
 =item author
 
 Indicates the author of the entry.
 
-This accessor returns a <XML::Atom::Syndication::Person>
+This accessor returns a L<XML::Atom::Syndication::Person>
 object. This element can be set using a string and hash
 reference or by passing in an object. See Working with
 Object Setters in L<XML::Atom::Syndication::Object> for more
@@ -61,7 +87,7 @@ detail.
 
 Conveys information about a category associated with an entry.
 
-This accessor returns a <XML::Atom::Syndication::Category>
+This accessor returns a L<XML::Atom::Syndication::Category>
 object. This element can be set using a string and hash
 reference or by passing in an object. See Working with
 Object Setters in L<XML::Atom::Syndication::Object> for more
@@ -71,7 +97,7 @@ detail.
 
 Contains or links to the content of the entry. 
 
-This accessor returns a <XML::Atom::Syndication::Content>
+This accessor returns a L<XML::Atom::Syndication::Content>
 object. This element can be set using a string and hash
 reference or by passing in an object. See Working with
 Object Setters in L<XML::Atom::Syndication::Object> for more
@@ -82,7 +108,7 @@ detail.
 Indicates a person or other entity who contributed to the
 entry.
 
-This accessor returns a <XML::Atom::Syndication::Person>
+This accessor returns a L<XML::Atom::Syndication::Person>
 object. This element can be set using a string and hash
 reference or by passing in an object. See Working with
 Object Setters in L<XML::Atom::Syndication::Object> for more
@@ -100,7 +126,7 @@ by passing in an optional string.
 
 Defines a reference from an entry to a Web resource.
 
-This accessor returns a <XML::Atom::Syndication::Link>
+This accessor returns a L<XML::Atom::Syndication::Link>
 object. This element can be set using a string and hash
 reference or by passing in an object. See Working with
 Object Setters in L<XML::Atom::Syndication::Object> for more
@@ -120,7 +146,7 @@ to the "date-time" production in [RFC3339].
 Conveys information about rights held in and over an entry
 or feed.
 
-This accessor returns a <XML::Atom::Syndication::Text>
+This accessor returns a L<XML::Atom::Syndication::Text>
 object. This element can be set using a string and hash
 reference or by passing in an object. See Working with
 Object Setters in L<XML::Atom::Syndication::Object> for more
@@ -131,7 +157,7 @@ detail.
 Contains meta data describing the original source of the
 entry. 
 
-This accessor returns a <XML::Atom::Syndication::Source>
+This accessor returns a L<XML::Atom::Syndication::Source>
 object. This element can be set using a string and hash
 reference or by passing in an object. See Working with
 Object Setters in L<XML::Atom::Syndication::Object> for more
@@ -141,7 +167,7 @@ detail.
 
 Conveys a short summary, abstract, or excerpt of an entry.
 
-This accessor returns a <XML::Atom::Syndication::Text>
+This accessor returns a L<XML::Atom::Syndication::Text>
 object. This element can be set using a string and hash
 reference or by passing in an object. See Working with
 Object Setters in L<XML::Atom::Syndication::Object> for more
@@ -151,7 +177,7 @@ detail.
 
 Conveys a human-readable title for an entry.
 
-This accessor returns a <XML::Atom::Syndication::Text>
+This accessor returns a L<XML::Atom::Syndication::Text>
 object. This element can be set using a string and hash
 reference or by passing in an object. See Working with
 Object Setters in L<XML::Atom::Syndication::Object> for more

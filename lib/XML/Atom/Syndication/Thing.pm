@@ -21,10 +21,10 @@ sub init {
     if (%param) {
         if (my $stream = $param{Stream}) {
             my $parser = XML::Elemental->parser;
-            my $xml;
             if (ref($stream) eq 'SCALAR') {
-                $xml = $$stream;
+                $thing->{doc} = $parser->parse_string($$stream);
             } elsif (ref $stream eq 'GLOB' || !ref($stream)) {
+                my $xml;
                 my $fh;
                 unless (ref $stream eq 'GLOB') {
                     $fh = gensym();
@@ -34,22 +34,10 @@ sub init {
                 }
                 { local $/; $xml = <$fh>; }
                 close $fh unless (ref $stream eq 'GLOB');
+                $thing->{doc}  = $parser->parse_string($xml);
             } else {
                 return;
             }
-            if ($] > 5.008) {
-                $xml =~ s{<\?xml(.*?)encoding=['"](.*?)['"](.*?)\?>}
-                    {<\?xml$1encoding="utf-8"$3\?>};
-                my $enc = $2;
-                if ($enc && lc($enc) ne 'utf-8') {    # need to convert to utf-8
-                    eval {
-                        require Encode;
-                        Encode::from_to($xml, $enc, 'utf-8');
-                    };
-                    warn $@ if $@;
-                }
-            }
-            $thing->{doc}  = $parser->parse_string($xml);
             $thing->{elem} = $thing->{doc}->contents->[0];
         } elsif ($param{Elem}) {
             $thing->{elem} = $param{Elem};

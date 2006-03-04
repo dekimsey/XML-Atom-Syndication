@@ -155,9 +155,12 @@ Returns the namespace prefix assigned to the given URI.
 =item $writer->as_xml($node,$is_full)
 
 Returns an XML representation of the given node and all its
-descendents. By default the method returns an XML fragment
+descendants. By default the method returns an XML fragment
 unless C<$is_full> is a true value. If C<$is_full> is true
-an XML declartion is prepended to the output. 
+an XML declaration is prepended to the output. 
+
+All output will be in UTF-8 regardless of the original
+encoding before parsing.
 
 =back
 
