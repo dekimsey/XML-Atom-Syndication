@@ -1,5 +1,10 @@
 Revision history for Perl extension XML::Atom::Syndication
 
+0.9  Mar 15 2006
+    - Complete rewrite and overhaul released. Initially based on XML::Atom 
+      interface then tweaked and optimized for Atom 1.0 compliance. Puts 
+      portability over performance.
+
 0.09 Jul 16 2005
     - Replaced use of Style param in XML::Atom::Syndication with Handlers param.
       This lowered the necessary prerequisite of XML::Parser needed.

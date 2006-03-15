@@ -27,7 +27,7 @@ __END__
 
 XML::Atom::Syndication::Entry - class representing an Atom entry
 
-=head SYNOPSIS
+=head1 SYNOPSIS
 
     use XML::Atom::Syndication::Entry;
     use XML::Atom::Syndication::Text;

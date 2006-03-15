@@ -66,7 +66,7 @@ __END__
 
 XML::Atom::Syndication::Feed - class representing an Atom feed
 
-=head SYNOPSIS
+=head1 SYNOPSIS
 
     use XML::Atom::Syndication::Feed;
     use XML::Atom::Syndication::Entry;

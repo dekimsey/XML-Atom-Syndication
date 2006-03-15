@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION);
-$VERSION = '0.9_08';
+$VERSION = '0.9';
 
 package XML::Atom::Syndication::Namespace;
 use strict;
@@ -32,7 +32,8 @@ __END__
 
 =head1 NAME
 
-XML::Atom::Syndication - portable Atom Syndication Format (RFC 4287) feeds processing.
+XML::Atom::Syndication - a portable client for 
+consuming RFC 4287 Atom Syndication Feeds.
 
 =head1 DESCRIPTION
 

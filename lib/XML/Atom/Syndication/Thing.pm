@@ -34,7 +34,7 @@ sub init {
                 }
                 { local $/; $xml = <$fh>; }
                 close $fh unless (ref $stream eq 'GLOB');
-                $thing->{doc}  = $parser->parse_string($xml);
+                $thing->{doc} = $parser->parse_string($xml);
             } else {
                 return;
             }
