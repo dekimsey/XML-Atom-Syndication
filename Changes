@@ -1,5 +1,9 @@
 Revision history for Perl extension XML::Atom::Syndication
 
+0.901Mar 20 2006
+    - Fixed from inclusion of resource fork OS X "feature" by creating the
+      distro on a Linux box.
+
 0.9  Mar 15 2006
     - Complete rewrite and overhaul released. Initially based on XML::Atom 
       interface then tweaked and optimized for Atom 1.0 compliance. Puts 
