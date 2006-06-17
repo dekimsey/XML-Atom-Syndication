@@ -1,8 +1,11 @@
 Revision history for Perl extension XML::Atom::Syndication
 
-0.901Mar 20 2006
-    - Fixed from inclusion of resource fork OS X "feature" by creating the
-      distro on a Linux box.
+0.91 Jun 17 2006
+    - Added conditional use of Encode to XML::Atom::Syndication::Content so 
+      module won't fail when used with versions prior to Perl 5.8
+
+0.901Mar 15 2006
+    - Fixed botched distribution file
 
 0.9  Mar 15 2006
     - Complete rewrite and overhaul released. Initially based on XML::Atom 

@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION);
-$VERSION = '0.901';
+$VERSION = '0.91';
 
 package XML::Atom::Syndication::Namespace;
 use strict;
@@ -123,7 +123,7 @@ in UTF-8 regardless of the original encoding before parsing.
 
 =item L<XML::Writer> 0.600
 
-=item L<Class:ErrorHandler>
+=item L<Class::ErrorHandler>
 
 =item L<MIME::Base64>
 

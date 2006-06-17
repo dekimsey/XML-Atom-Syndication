@@ -3,7 +3,7 @@ use strict;
 
 use base qw( XML::Atom::Syndication::Object );
 
-use Encode;
+use XML::Atom::Syndication::Util qw( utf8_off );
 use MIME::Base64 qw( encode_base64 decode_base64 );
 
 XML::Atom::Syndication::Content->mk_accessors('attribute', 'type', 'src');
@@ -46,7 +46,7 @@ sub body {
     if (@_) {    # set
         my $data = shift;
         if ($mode eq 'base64') {    # is binary
-            Encode::_utf8_off($data);
+            utf8_off($data);
             require XML::Elemental::Characters;
             my $b = XML::Elemental::Characters->new;
             $b->data(encode_base64($data, ''));
@@ -98,6 +98,7 @@ sub body {
                     $content->{__body} = $elem->text_content;
                 }
                 if ($] >= 5.008) {
+                    require Encode;
                     Encode::_utf8_on($content->{__body});
                     $content->{__body} =~ s/&#x(\w{4});/chr(hex($1))/eg;
                     Encode::_utf8_off($content->{__body});
