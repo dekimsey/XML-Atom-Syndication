@@ -44,9 +44,10 @@ sub as_xml {
     if ($is_full) {    # full doc
         my ($name, $ns) = process_name($node->name);
         $w = XML::Writer->new(
-                    OUTPUT     => \$xml,
-                    NAMESPACES => 1,
-                    PREFIX_MAP => $self->{__NS},    # FORCED_NS_DECLS => [ $ns ]
+            OUTPUT => \$xml,
+            UNSAFE => 1,      # consequence of not using buggy characters method
+            NAMESPACES => 1,
+            PREFIX_MAP => $self->{__NS},    # FORCED_NS_DECLS => [ $ns ]
         );
         $w->xmlDecl('utf-8');
     } else {    # fragment
@@ -85,6 +86,41 @@ sub as_xml {
     $xml;
 }
 
+my %Map = (
+           '&'  => '&amp;',
+           '"'  => '&quot;',
+           '<'  => '&lt;',
+           '>'  => '&gt;',
+           '\'' => '&apos;'
+);
+my $RE = join '|', keys %Map;
+
+sub encode_xml
+{ # XML::Write::character encoding is wrong so we handle this ourselves.
+    my ($w, $str, $nocdata) = @_;
+    return '' unless defined $str;
+    if (
+        !$nocdata
+        && $str =~ m/
+        <[^>]+>  ## HTML markup
+        |        ## or
+        &(?:(?!(\#([0-9]+)|\#x([0-9a-fA-F]+))).*?);
+                 ## something that looks like an HTML entity.
+    /x
+      ) {
+        ## If ]]> exists in the string, encode the > to &gt;.
+        $str =~ s/]]>/]]&gt;/g;
+        $str = '<![CDATA[' . $str . ']]>';
+      } else {
+        $str =~ s!($RE)!$Map{$1}!g;
+    }
+    $w->raw($str); # forces UNSAFE mode at all times.
+}
+
+1;
+
+__END__
+
 # utility for intelligent use of cdata.
 sub encode_xml {
     my ($w, $data, $nocdata) = @_;
@@ -107,10 +143,6 @@ sub encode_xml {
         $w->characters($data);
     }
 }
-
-1;
-
-__END__
 
 =head1 NAME
 

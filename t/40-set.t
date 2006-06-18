@@ -6,12 +6,13 @@ use strict;
 use warnings;
 use lib 'lib';
 
-use Test::More tests => 35;
+use Test::More tests => 40;
 
 use XML::Atom::Syndication::Test::Util qw( get_feed );
 use XML::Atom::Syndication::Feed;
 use XML::Atom::Syndication::Link;
 use XML::Atom::Syndication::Entry;
+use XML::Atom::Syndication::Content;
 
 my $feed = XML::Atom::Syndication::Feed->new;
 ok(ref $feed eq 'XML::Atom::Syndication::Feed');
@@ -44,6 +45,10 @@ ok($e->link($via,1));
 ok($feed->insert_entry($e)); 
 my $e2 = XML::Atom::Syndication::Entry->new;
 ok($e2->title('Entry 2'));
+my $c = XML::Atom::Syndication::Content->new;
+ok($c->type('text'));
+ok($c->body('Not what he & I "thought."'));
+ok($e2->content($c));
 ok($feed->add_entry($e2)); 
 
 # check that everthing comes out the right way now.
@@ -64,6 +69,9 @@ my @elinks = $e[0]->link;
 ok(@links == 2);
 ok(grep { $_->rel eq 'via' } @elinks);
 ok(grep { $_->rel eq 'alternate' } @elinks);
+
+ok($e[1]->title->body eq 'Entry 2');
+ok($e[1]->content->body eq 'Not what he & I "thought."');
 
 # warn $feed->as_xml;
 

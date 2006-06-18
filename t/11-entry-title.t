@@ -14,7 +14,7 @@ use XML::Atom::Syndication::Feed;
 my @titles = (
     ['entry_title.xml','Example Atom'],
     ['entry_title_escaped_markup.xml','Example <b>Atom</b>','html'],
-    ['entry_title_inline_markup_2.xml','<div>History of the &lt;blink&gt; tag</div>','xhtml'],
+    ['entry_title_inline_markup_2.xml','<div><![CDATA[History of the <blink> tag]]></div>','xhtml'],
     ['entry_title_inline_markup.xml','<div>Example <b>Atom</b></div>','xhtml'],
     ['entry_title_text_plain.xml','Example Atom','text'],
     ['entry_title_text_plain_brackets.xml','History of the <blink> tag','text']

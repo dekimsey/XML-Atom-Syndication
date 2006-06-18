@@ -1,5 +1,10 @@
 Revision history for Perl extension XML::Atom::Syndication
 
+0.92 Jun 17 2006
+    - Found a bug in XML::Writer::characters. Now handling encoding of character 
+      data ourselves. Subsequentally was performing inline_markup_2 test 
+      incorrectly. Fixed those also.
+    
 0.91 Jun 17 2006
     - Added conditional use of Encode to XML::Atom::Syndication::Content so 
       module won't fail when used with versions prior to Perl 5.8

@@ -14,7 +14,7 @@ use XML::Atom::Syndication::Feed;
 my @summaries = (
     ['entry_summary.xml','Example Atom'],
     ['entry_summary_escaped_markup.xml','Example <b>Atom</b>','html'],
-    ['entry_summary_inline_markup_2.xml','<div>History of the &lt;blink&gt; tag</div>','xhtml'],
+    ['entry_summary_inline_markup_2.xml','<div><![CDATA[History of the <blink> tag]]></div>','xhtml'],
     ['entry_summary_inline_markup.xml','<div>Example <b>Atom</b></div>','xhtml'],
     ['entry_summary_text_plain.xml','Example Atom','text']
 );
