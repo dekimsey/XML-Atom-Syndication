@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION);
-$VERSION = '0.93';
+$VERSION = '0.94';
 
 package XML::Atom::Syndication::Namespace;
 use strict;

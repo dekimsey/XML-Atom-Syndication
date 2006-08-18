@@ -1,5 +1,9 @@
 Revision history for Perl extension XML::Atom::Syndication
 
+0.94 Aug 17 2006
+    - Added inner_atom method to the feed, entry and source classes + tests
+    - A few more documentation fixes
+
 0.93 Jul 21 2006
     - Documentation fixes. (Thanks to John Gruber and gdsotirov)
     - Fixed bug were I misread section 3.1.1.3 and was wrapping XHTML 

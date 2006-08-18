@@ -38,6 +38,7 @@ t/18-entry-content.t
 t/20-source.t
 t/21-source-title.t
 t/40-set.t
+t/50-inner-atom.t
 t/lib/XML/Atom/Syndication/Test/Util.pm
 t/README
 t/x/atom10_namespace.xml

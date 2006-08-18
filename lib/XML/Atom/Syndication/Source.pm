@@ -65,9 +65,50 @@ published and atom entry elements.
 =head1 METHODS
 
 XML::Atom::Syndication::Source is a subclass of
-L<XML::Atom::Syndication:::Object> that it inherits a number of
-methods from. You should already be familar with this base
-class before proceeding.
+L<XML::Atom::Syndication::Object> (via
+L<XML::Atom::Syndication::Thing>) that it inherits
+a number of methods from. You should already be
+familiar with this base class before proceeding.
+
+=over
+
+=item Class->new(%params);
+
+Constructor. A HASH can be passed to initialize the object. Recognized 
+keys are:
+
+=over
+
+=item Elem
+
+A L<XML::Elemental::Element> that will be used as the source for this object. 
+This object can be retrieved or set using the C<elem> method.
+
+=item Namespace
+
+A string containing the namespace URI for the element.
+
+=item Version
+
+A SCALAR contain the Atom format version. This hash key can
+optionally be used instead of setting the element official
+Atom Namespace URIs using the Namespace key. Recognized
+values are 1.0 and 0.3. 1.0 is used as the default if
+Namespace and Version are not defined.
+
+=back
+
+=item inner_atom($atom_markup_string)
+
+This is a convenience method for quickly setting
+the child Atom elements of the source with a string.
+The string must also be well-formed XML. This
+method will replaces any existing child elements.
+All elements are presumed to be in the same Atom
+namespace as the source object.
+
+This method is similar to the innerHTML property
+found in JavaScript.
 
 =item author
 

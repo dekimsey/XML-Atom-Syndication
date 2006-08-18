@@ -117,6 +117,18 @@ C<Stream> element. The value of this element can be a SCALAR
 or FILEHANDLE (GLOB) to a valid Atom document. The C<Stream>
 element takes precedence over the standard C<Elem> element.
 
+=item inner_atom($atom_markup_string)
+
+This is a convenience method for quickly setting
+the child Atom elements of the feed with a string.
+The string must also be well-formed XML. This
+method will replaces any existing child elements.
+All elements are presumed to be in the same Atom
+namespace as the feed object.
+
+This method is similar to the innerHTML property
+found in JavaScript.
+
 =item author
 
 Indicates the author of the feed.

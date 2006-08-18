@@ -4,6 +4,8 @@ use strict;
 use base qw( XML::Atom::Syndication::Object );
 use Symbol;
 
+use XML::Elemental;
+
 XML::Atom::Syndication::Thing->mk_accessors('XML::Atom::Syndication::Person',
                                             'author', 'contributor');
 XML::Atom::Syndication::Thing->mk_accessors('XML::Atom::Syndication::Link',
@@ -48,6 +50,19 @@ sub init {
         $thing->{elem}->name('{' . $thing->ns . '}' . $thing->element_name);
     }
     $thing;
+}
+
+sub inner_atom {
+    my ($thing, $str) = @_;
+    my $name   = $thing->element_name;
+    my $ns     = $thing->ns;
+    my $parser = XML::Elemental->parser;
+    my $doc    = $parser->parse_string("<$name xmlns='$ns'>$str</$name>");
+    my $pseudo = $doc->contents->[0];
+    my $parent = $thing->elem;
+    map { $_->parent($parent) } @{$pseudo->contents};
+    $parent->contents($pseudo->contents);
+    1;
 }
 
 1;

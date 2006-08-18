@@ -8,7 +8,6 @@ use lib 'lib';
 
 use Test::More tests => 40;
 
-use XML::Atom::Syndication::Test::Util qw( get_feed );
 use XML::Atom::Syndication::Feed;
 use XML::Atom::Syndication::Link;
 use XML::Atom::Syndication::Entry;
