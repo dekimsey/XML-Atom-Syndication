@@ -13,8 +13,8 @@ use XML::Atom::Syndication::Feed;
 my @titles = (
     ['entry_source_title.xml','Example Atom'],
     ['entry_source_title_escaped_markup.xml','Example <b>Atom</b>','html'],
-    ['entry_source_title_inline_markup_2.xml','<div><![CDATA[History of the <blink> tag]]></div>','xhtml'],
-    ['entry_source_title_inline_markup.xml','<div>Example <b>Atom</b></div>','xhtml'],
+    ['entry_source_title_inline_markup_2.xml','History of the &lt;blink&gt; tag','xhtml'],
+    ['entry_source_title_inline_markup.xml','Example <b>Atom</b>','xhtml'],
     ['entry_source_title_text_plain.xml','Example Atom','text']
 );
 

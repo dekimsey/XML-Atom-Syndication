@@ -37,6 +37,13 @@ sub set_prefix {
 sub get_prefix    { $_[0]->{__NS}->{$_[1]} }
 sub get_namespace { $_[0]->{__PREFIX}->{$_[1]} }
 
+sub no_cdata {
+    if (defined $_[1]) {
+        $_[0]->{__NO_CDATA} = $_[1] ? 1 : 0;
+    }
+    $_[0]->{__NO_CDATA};
+}
+
 sub as_xml {
     my ($self, $node, $is_full) = @_;
     my $xml = '';
@@ -56,7 +63,7 @@ sub as_xml {
     my $dumper;
     $dumper = sub {
         my $node = shift;
-        return encode_xml($w, $node->data)
+        return encode_xml($w, $node->data, $self->{__NO_CDATA})
           if (ref $node eq 'XML::Elemental::Characters');
         my ($name, $ns) =
           process_name($node->name);    # it must be an element then.
@@ -96,7 +103,7 @@ my %Map = (
 my $RE = join '|', keys %Map;
 
 sub encode_xml
-{ # XML::Write::character encoding is wrong so we handle this ourselves.
+{    # XML::Writer::character encoding is wrong so we handle this ourselves.
     my ($w, $str, $nocdata) = @_;
     return '' unless defined $str;
     if (
@@ -114,7 +121,7 @@ sub encode_xml
       } else {
         $str =~ s!($RE)!$Map{$1}!g;
     }
-    $w->raw($str); # forces UNSAFE mode at all times.
+    $w->raw($str);    # forces UNSAFE mode at all times.
 }
 
 1;
@@ -193,6 +200,17 @@ an XML declaration is prepended to the output.
 
 All output will be in UTF-8 regardless of the original
 encoding before parsing.
+
+=item $writer->no_cdata([$boolean])
+
+Defines the use of the CDATA construct for encoding 
+embedded markup. By default this flag is set to false in 
+which case CDATA will be used to  escape what looks like 
+markup instead of using entity encoding. The purpose is that 
+CDATA is more concise, readable and requires less processing.
+This is not always desirable this can be turned off by passing 
+in a true value. If nothing is passed the current state of 
+CDATA use is returned.
 
 =back
 

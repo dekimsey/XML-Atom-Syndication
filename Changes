@@ -1,5 +1,14 @@
 Revision history for Perl extension XML::Atom::Syndication
 
+0.93 Jul 21 2006
+    - Documentation fixes. (Thanks to John Gruber and gdsotirov)
+    - Fixed bug were I misread section 3.1.1.3 and was wrapping XHTML 
+      content in divs. Also updated related tests.
+    - Fixed bug in XML::Atom::Syndication::Text were Encode was not loaded 
+      before being used. Because of Encode's extensive use this problem is 
+      only apparent under certain conditions.
+    - Added no_cdata method to XML::Atom::Syndication::Writer. 
+
 0.92 Jun 17 2006
     - Found a bug in XML::Writer::characters. Now handling encoding of character 
       data ourselves. Subsequentally was performing inline_markup_2 test 

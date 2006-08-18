@@ -12,12 +12,12 @@ use XML::Atom::Syndication::Test::Util qw( get_feed );
 use XML::Atom::Syndication::Feed;
 
 my @contents = (
-    ['entry_content_application_xml.xml','body','<div>Example <b>Atom</b></div>'],
+    ['entry_content_application_xml.xml','body','Example <b>Atom</b>'],
     ['entry_content_base64.xml','body','Example <b>Atom</b>'],
     ['entry_content_base64_2.xml','body','<p>History of the &lt;blink&gt; tag</p>'],
     ['entry_content_escaped_markup.xml','body','Example <b>Atom</b>'],
-    ['entry_content_inline_markup.xml','body','<div>Example <b>Atom</b></div>'],
-    ['entry_content_inline_markup_2.xml','body','<div><![CDATA[History of the <blink> tag]]></div>'],
+    ['entry_content_inline_markup.xml','body','Example <b>Atom</b>'],
+    ['entry_content_inline_markup_2.xml','body','<![CDATA[History of the <blink> tag]]>'],
     ['entry_content_src.xml','src','http://example.com/movie.mp4'],
     ['entry_content_text_plain.xml','body','Example Atom'],
     ['entry_content_text_plain_brackets.xml','body','History of the <blink> tag'],

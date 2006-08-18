@@ -57,6 +57,11 @@ representation that is relevant to the generating agent.
 
 Indicates the version of the generating agent. 
 
+=item agent
+
+The contents of the tagset, a human-readable name
+for the generating agent.
+
 =back
 
 =head2 DEPRECATED

@@ -14,8 +14,8 @@ use XML::Atom::Syndication::Feed;
 my @rights = (
     ['feed_rights.xml','Example Atom'],
     ['feed_rights_escaped_markup.xml','Example <b>Atom</b>','html'],
-    ['feed_rights_inline_markup_2.xml','<div><![CDATA[History of the <blink> tag]]></div>','xhtml'],
-    ['feed_rights_inline_markup.xml','<div>Example <b>Atom</b></div>','xhtml'],
+    ['feed_rights_inline_markup_2.xml','History of the &lt;blink&gt; tag','xhtml'],
+    ['feed_rights_inline_markup.xml','Example <b>Atom</b>','xhtml'],
     ['feed_rights_text_plain.xml','Example Atom','text'],
     ['feed_rights_content_type_text.xml','Example Atom','text'],
     ['feed_rights_content_value.xml','Example Atom']
