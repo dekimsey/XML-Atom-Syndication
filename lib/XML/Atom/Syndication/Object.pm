@@ -6,7 +6,7 @@ use base qw( Class::ErrorHandler );
 use constant XMLNS => 'http://www.w3.org/XML/1998/namespace';
 
 use Carp;
-use XML::Elemental;
+use XML::Elemental 2.01;
 use XML::Elemental::Util qw( process_name );
 use XML::Atom::Syndication::Util qw( nodelist utf8_off );
 use XML::Atom::Syndication::Writer;

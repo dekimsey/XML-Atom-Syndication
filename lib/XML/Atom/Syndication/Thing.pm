@@ -60,8 +60,9 @@ sub inner_atom {
     my $doc    = $parser->parse_string("<$name xmlns='$ns'>$str</$name>");
     my $pseudo = $doc->contents->[0];
     my $parent = $thing->elem;
-    map { $_->parent($parent) } @{$pseudo->contents};
+    $_->parent($parent) for @{$pseudo->contents};
     $parent->contents($pseudo->contents);
+    $pseudo->contents([]);
     1;
 }
 

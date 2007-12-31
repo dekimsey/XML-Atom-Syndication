@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION);
-$VERSION = '0.94';
+$VERSION = '0.941';
 
 package XML::Atom::Syndication::Namespace;
 use strict;
@@ -119,7 +119,7 @@ in UTF-8 regardless of the original encoding before parsing.
 
 =over
 
-=item L<XML::Elemental> 2.0
+=item L<XML::Elemental> 2.01
 
 =item L<XML::Writer> 0.600
 
@@ -144,7 +144,7 @@ L<http://www.perl.com/language/misc/Artistic.html>.
 =head1 AUTHOR & COPYRIGHT
 
 Except where otherwise noted, XML::Atom::Syndication is
-Copyright 2004-2006, Timothy Appnel, tima@cpan.org.
+Copyright 2004-2007, Timothy Appnel, tima@cpan.org.
 All rights reserved.
 
 =cut

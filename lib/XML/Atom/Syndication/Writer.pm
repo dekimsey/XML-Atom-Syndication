@@ -81,7 +81,7 @@ sub as_xml {
         }
         if (@$children) {
             $w->startTag($tag, @attr);
-            map { $dumper->($_) } @$children;
+            $dumper->($_) for @$children;
             $w->endTag($tag);
         } else {
             $w->emptyTag($tag, @attr);
