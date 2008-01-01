@@ -1,5 +1,9 @@
 Revision history for Perl extension XML::Atom::Syndication
 
+0.942 Jan 1 2008
+    - Nothing new. Just a distribution sans the %$!*#~@ OS X
+      resource files.
+      
 0.941 Dec 31 2007
     - Fix dangling references in pseudo doc object used by inner_atom
     - Incremented XML::Elemental dependency to v2.01
