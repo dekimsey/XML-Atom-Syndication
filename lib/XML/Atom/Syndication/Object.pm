@@ -147,21 +147,23 @@ sub set_element {
             _remove($node) || return $atom->error($node->errstr);
         }
     }
-    if (my $class = ref $val) {
-        $val = $val->elem if $class =~ /^XML::Atom::Syndication::/;
-        $val->parent($atom->elem);
-        push @{$atom->elem->contents}, $val;
-    } elsif (defined $val) {
-        my $elem = XML::Elemental::Element->new;
-        $elem->name("{$ns_uri}$name");
-        $elem->attributes($attr) if $attr;
-        $elem->parent($atom->elem);
-        push @{$atom->elem->contents}, $elem;
-        use XML::Elemental::Characters;
-        my $chars = XML::Elemental::Characters->new;
-        $chars->data($val);
-        $chars->parent($elem);
-        push @{$elem->contents}, $chars;
+    foreach $val ( ref $val eq 'ARRAY' ? @$val : $val ){
+        if (my $class = ref $val) {
+            $val = $val->elem if $class =~ /^XML::Atom::Syndication::/;
+            $val->parent($atom->elem);
+            push @{$atom->elem->contents}, $val;
+        } elsif (defined $val) {
+            my $elem = XML::Elemental::Element->new;
+            $elem->name("{$ns_uri}$name");
+            $elem->attributes($attr) if $attr;
+            $elem->parent($atom->elem);
+            push @{$atom->elem->contents}, $elem;
+            use XML::Elemental::Characters;
+            my $chars = XML::Elemental::Characters->new;
+            $chars->data($val);
+            $chars->parent($elem);
+            push @{$elem->contents}, $chars;
+        }
     }
     $val;
 }
